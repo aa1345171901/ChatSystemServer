@@ -57,11 +57,11 @@
         }
 
         /// <summary>
-        /// 对客户端发送的请求做出回应
+        /// 对客户端发送的请求做出回应，由client发送
         /// </summary>
-        public void SendResponse()
+        public void SendResponse(ActionCode actionCode, Client client, string data)
         {
-
+            client.SnedReponse();
         }
 
         /// <summary>

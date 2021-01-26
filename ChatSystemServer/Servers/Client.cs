@@ -54,6 +54,22 @@
         }
 
         /// <summary>
+        /// 发送响应是否成功以及响应信息给客户端
+        /// </summary>
+        public void SnedReponse(ActionCode actionCode, string data)
+        {
+            byte[] bytes = Message.PackData(actionCode, data);
+            try
+            {
+                clientSocket.Send(bytes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("发送给客户端回应失败" + e.Message);
+            }
+        }
+
+        /// <summary>
         /// 用于开启客户端的服务
         /// </summary>
         public void Start()

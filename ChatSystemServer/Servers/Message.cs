@@ -2,6 +2,8 @@
 namespace ChatSystemServer.Servers
 {
     using System;
+    using System.Linq;
+    using System.Text;
     using Common;
 
     /// <summary>
@@ -34,6 +36,20 @@ namespace ChatSystemServer.Servers
         public int RemainSize
         {
             get { return data.Length - startIndex; }
+        }
+
+        /// <summary>
+        /// 将需要发送给客户端的消息打包
+        /// </summary>
+        /// <returns>用字节数组传输</returns>
+        public static byte[] PackData(ActionCode actionCode, string data)
+        {
+            byte[] requestCodeBytes = BitConverter.GetBytes((int)actionCode);
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+            int dataAmount = requestCodeBytes.Length + dataBytes.Length;
+            byte[] dataAmountBytes = BitConverter.GetBytes(dataAmount);
+            byte[] newBytes = dataAmountBytes.Concat(requestCodeBytes).ToArray<byte>();
+            return newBytes.Concat(dataBytes).ToArray<byte>();
         }
 
         /// <summary>
