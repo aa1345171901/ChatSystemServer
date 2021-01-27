@@ -50,7 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\BaseController.cs" />
+    <Compile Include="Controller\ChatController.cs" />
     <Compile Include="Controller\ControllerManager.cs" />
+    <Compile Include="Controller\FriendController.cs" />
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="DAO\UserDAO.cs" />
     <Compile Include="Helper\DBHelper.cs" />

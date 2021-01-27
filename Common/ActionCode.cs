@@ -6,6 +6,7 @@ namespace Common
         None,
         Login,
         Register,
+        Optional,
         Modify,
         AddFriend,
         SendMeesage,

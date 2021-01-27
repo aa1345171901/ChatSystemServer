@@ -62,7 +62,7 @@ namespace ChatSystemServer.Controller
                 return;
             }
 
-            return 
+            serverSocket.SendResponse(actionCode, client, rt as string);
         }
     }
 }
