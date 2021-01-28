@@ -17,7 +17,7 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FriendController"/> class.
-        /// 设置BaseController的reqeuseCode为Friend.
+        /// 设置BaseController的reqeuseCode为Friend
         /// </summary>
         public FriendController()
         {
