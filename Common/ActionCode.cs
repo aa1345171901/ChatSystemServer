@@ -9,6 +9,7 @@ namespace Common
         Optional,
         Modify,
         AddFriend,
-        SendMeesage,
+        SearchFriend,
+        DeleteFriend,
     }
 }

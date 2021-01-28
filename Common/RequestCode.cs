@@ -5,6 +5,7 @@ namespace Common
     {
         None,
         User,
-        Message
+        Friend,
+        Chat
     }
 }
