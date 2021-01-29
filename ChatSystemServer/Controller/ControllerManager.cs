@@ -37,8 +37,7 @@ namespace ChatSystemServer.Controller
         /// </summary>
         public void RequestHander(RequestCode requestCode, ActionCode actionCode, string data, Client client)
         {
-            BaseController baseController;
-            bool isGet = controllerDict.TryGetValue(requestCode, out baseController);
+            bool isGet = controllerDict.TryGetValue(requestCode, out BaseController baseController);
             if (isGet == false)
             {
                 Console.WriteLine("无法得到[" + requestCode + "]所对应的Conrtoller，无法处理");

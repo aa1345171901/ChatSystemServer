@@ -12,6 +12,7 @@ namespace ChatSystemServer.Controller
     public class UserController : BaseController
     {
         private UserDAO userDAO;
+        private UserDataDAO _userDataDAO;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
@@ -21,6 +22,7 @@ namespace ChatSystemServer.Controller
         {
             requestCode = RequestCode.User;
             userDAO = new UserDAO();
+            _userDataDAO = new UserDataDAO();
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace ChatSystemServer.Controller
             }
             else
             {
-                UserData userData = userDAO.GetUserDataByDataId(client.MySqlConnection, user.DataId);
+                UserData userData = _userDataDAO.GetUserDataByDataId(client.MySqlConnection, user.DataId);
                 client.SetUserAndData(user, userData);
                 return string.Format("{0},{1},{2}", ((int)ReturnCode.Success).ToString(), user.Id, userData.GetString());
             }
@@ -76,7 +78,7 @@ namespace ChatSystemServer.Controller
             string name = strs[3];
             int starid = int.Parse(strs[4]);
             int bloodtypeid = int.Parse(strs[5]);
-            if (userDAO.Optional(client.MySqlConnection, dataId, sex, age, name, starid, bloodtypeid))
+            if (_userDataDAO.Optional(client.MySqlConnection, dataId, sex, age, name, starid, bloodtypeid))
             {
                 return ((int)ReturnCode.Success).ToString();
             }
@@ -101,7 +103,7 @@ namespace ChatSystemServer.Controller
             int starid = int.Parse(strs[5]);
             int bloodtypeid = int.Parse(strs[6]);
             int faceId = int.Parse(strs[7]);
-            if (userDAO.ModifyById(client.MySqlConnection, dataId, nickName, sex, age, name, starid, bloodtypeid, faceId))
+            if (_userDataDAO.ModifyById(client.MySqlConnection, dataId, nickName, sex, age, name, starid, bloodtypeid, faceId))
             {
                 return ((int)ReturnCode.Success).ToString();
             }
@@ -109,6 +111,34 @@ namespace ChatSystemServer.Controller
             {
                 return ((int)ReturnCode.Fail).ToString();
             }
+        }
+
+        /// <summary>
+        /// 设置系统头像
+        /// </summary>
+        /// <returns>返回设置是否成功</returns>
+        public string SetSystemFace(string data, Client client, Server server)
+        {
+            string[] strs = data.Split(',');
+            int dataId = int.Parse(strs[0]);
+            int faceId = int.Parse(strs[1]);
+            if (_userDataDAO.SetSystemFace(client.MySqlConnection, dataId, faceId))
+            {
+                return ((int)ReturnCode.Success).ToString();
+            }
+            else
+            {
+                return ((int)ReturnCode.Fail).ToString();
+            }
+        }
+
+        /// <summary>
+        /// 设置自己的头像,发送的data是图片，需要保存
+        /// </summary>
+        /// <returns>返回设置是否成功</returns>
+        public string SetSelfFace(string data, Client client, Server server)
+        {
+            return null;
         }
     }
 }

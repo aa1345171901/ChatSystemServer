@@ -2,6 +2,7 @@
 namespace ChatSystemServer.DAO
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using MySql.Data.MySqlClient;
 
@@ -251,6 +252,78 @@ namespace ChatSystemServer.DAO
             {
                 Console.WriteLine("DeleteFriend连接数据库时出错:" + e.Message);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 通过用户id获取好友列表
+        /// </summary>
+        /// <returns>返回一组键值对</returns>
+        public Dictionary<int, (string, int)> GetFriends(MySqlConnection mySqlConnection, int id)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("select accetFriendId,NickName,FaceId from UserData,Friend,user where Friend.hostFriendId=@hostFriendId  AND user.id=friend.accetFriendId AND UserData.id=user.dataid", mySqlConnection);
+                cmd.Parameters.AddWithValue("hostFriendId", id);
+                reader = cmd.ExecuteReader();
+                Dictionary<int, (string, int)> friendsDic = new Dictionary<int, (string, int)>();
+                while (reader.Read())
+                {
+                    friendsDic.Add(reader.GetInt32("accetFriendId"), (reader.GetString("NickName"), reader.GetInt32("FaceId")));
+                }
+
+                reader.Close();
+                return friendsDic;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("GetFriends连接数据库时出错:" + e.Message);
+                return null;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取陌生人的昵称和头像
+        /// </summary>
+        /// <returns>昵称和头像，用‘，’分割</returns>
+        public string UpdateStranger(MySqlConnection mySqlConnection, int strangerId)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("select nickname, faceid from userdata,user where user.id=@id and user.dataid=userdata.id");
+                cmd.Parameters.AddWithValue("id", strangerId);
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    string res = reader.GetString("nickname") + ",";
+                    res += reader.GetInt32("faceid");
+                    return res;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("UpdateStranger连接数据库时出错:" + e.Message);
+                return null;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
         }
     }

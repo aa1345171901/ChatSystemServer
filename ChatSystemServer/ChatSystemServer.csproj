@@ -56,7 +56,8 @@
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="DAO\FriendDAO.cs" />
     <Compile Include="DAO\UserDAO.cs" />
-    <Compile Include="Helper\DataSetHelper.cs" />
+    <Compile Include="DAO\UserDataDAO.cs" />
+    <Compile Include="Helper\DataHelper.cs" />
     <Compile Include="Helper\DBHelper.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserData.cs" />

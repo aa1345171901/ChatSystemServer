@@ -8,8 +8,10 @@ namespace Common
         Register,
         Optional,
         Modify,
+        SetSelfFace,
         AddFriend,
         SearchFriend,
         DeleteFriend,
+        GetFriendList,
     }
 }

@@ -1,0 +1,168 @@
+﻿
+namespace ChatSystemServer.DAO
+{
+    using System;
+    using System.IO;
+    using System.Text;
+    using ChatSystemServer.Model;
+    using MySql.Data.MySqlClient;
+
+    /// <summary>
+    /// 用于操作UserData表的操作
+    /// </summary>
+    public class UserDataDAO
+    {
+        /// <summary>
+        /// 通过传入的dataId获得UserData表的内容
+        /// </summary>
+        /// <returns>返回UserData对象</returns>
+        public UserData GetUserDataByDataId(MySqlConnection mySqlConnection, int dataid)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("select * from userdata where id=@dataid", mySqlConnection);
+                cmd.Parameters.AddWithValue("dataid", dataid);
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    string nickName = reader.GetString("nickname");
+                    string sex = reader.GetString("sex");
+                    int age = reader.GetInt32("age");
+                    string name = reader.GetString("name");
+                    int starId = reader.GetInt32("starid");
+                    int bloodTypeId = reader.GetInt32("bloodtypeid");
+                    int faceId = reader.GetInt32("faceid");
+                    return new UserData(nickName, sex, age, name, starId, bloodTypeId, faceId);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("GetUserDataByDataId连接数据库时错误" + e.Message);
+                return null;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 注册后选填信息
+        /// </summary>
+        /// <returns>返回信息操作成功与否</returns>
+        public bool Optional(MySqlConnection mySqlConnection, int dataid, string sex, int age, string name, int starid, int bloodtypeid)
+        {
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("update userdata set sex=@sex,age=@age,name=@name,starid=@starid,bloodtypeid=@bloodtypeid where id=@dataid");
+                cmd.Parameters.AddWithValue("sex", sex);
+                cmd.Parameters.AddWithValue("age", age);
+                cmd.Parameters.AddWithValue("name", name);
+                cmd.Parameters.AddWithValue("starid", starid);
+                cmd.Parameters.AddWithValue("bloodtypeid", bloodtypeid);
+                cmd.Parameters.AddWithValue("dataid", dataid);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Optional连接数据库时出错:" + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 通过id修改用户信息
+        /// </summary>
+        /// <returns>返回更改信息是否成功</returns>
+        public bool ModifyById(MySqlConnection mySqlConnection, int dataid, string nickName, string sex, int age, string name, int starid, int bloodtypeid, int faceId)
+        {
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("update userdata set nickname=@nickname,sex=@sex,age=@age,name=@name,starid=@starid,bloodtypeid=@bloodtypeid where id=@dataid", mySqlConnection);
+                cmd.Parameters.AddWithValue("nickname", nickName);
+                cmd.Parameters.AddWithValue("sex", sex);
+                cmd.Parameters.AddWithValue("age", age);
+                cmd.Parameters.AddWithValue("name", name);
+                cmd.Parameters.AddWithValue("starid", starid);
+                cmd.Parameters.AddWithValue("bloodtypeid", bloodtypeid);
+                cmd.Parameters.AddWithValue("dataid", dataid);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ModifyById连接数据库时出错：" + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 设置头像，使用系统内置头像
+        /// </summary>
+        /// <returns>返回修改是否成功</returns>
+        public bool SetSystemFace(MySqlConnection mySqlConnection, int dataId, int faceId)
+        {
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("update userdata set faceid=@faceId where id=@dataid", mySqlConnection);
+                cmd.Parameters.AddWithValue("faceid", faceId);
+                cmd.Parameters.AddWithValue("dataid", dataId);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SetSystemFace访问数据库时出错:" + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 将传送过来的头像保存，并且设置该角色的faceid
+        /// </summary>
+        /// <returns>返回设置是否成功</returns>
+        public bool SetSelfFace(MySqlConnection mySqlConnection, int id, string data)
+        {
+            MemoryStream fs = new MemoryStream();
+            int len = data.Length;
+            byte[] dataBytesImg = Encoding.UTF8.GetBytes(data);
+
+            // fs.Write(dataBytesImg, 0, len);
+            // Bitmap Img = new Bitmap(fs);
+            // string filename = name + ".jpg";
+            // Img.Save(@"D:images" + filename, ImageFormat.Jpeg);
+            // fs.Close();
+            return false;
+        }
+    }
+}

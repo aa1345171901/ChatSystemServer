@@ -1,7 +1,9 @@
 ﻿namespace ChatSystemServer.Controller
 {
+    using ChatSystemServer.Servers;
+
     /// <summary>
-    /// 管理聊天信息的各种操作
+    /// 管理信息的各种操作
     /// </summary>
     public class ChatController
     {

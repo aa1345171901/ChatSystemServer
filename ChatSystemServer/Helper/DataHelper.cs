@@ -1,6 +1,7 @@
 ﻿
 namespace ChatSystemServer.Helper
 {
+    using System.Collections.Generic;
     using System.Data;
     using System.IO;
     using System.Runtime.Serialization;
@@ -9,7 +10,7 @@ namespace ChatSystemServer.Helper
     /// <summary>
     /// 用于将DataSet转换成byte数组，或者数组转换成DataSet数据集
     /// </summary>
-    public class DataSetHelper
+    public class DataHelper
     {
         /// <summary>
         /// 将DataSet转byte数组
@@ -65,6 +66,40 @@ namespace ChatSystemServer.Helper
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// 将字典转换成字符串转换
+        /// </summary>
+        /// <returns>返回字符串,用逗号分割</returns>
+        public static string DicToString(Dictionary<int, (string, int)> dics)
+        {
+            string returnValue = "";
+            foreach (var item in dics)
+            {
+                returnValue += item.Key + ",";
+                returnValue += item.Value.Item1 + ",";
+                returnValue += item.Value.Item2 + ",";
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// 将字符串转字典
+        /// </summary>
+        /// <returns>返回转换好的字典</returns>
+        public static Dictionary<int, (string, int)> StringToDic(string data)
+        {
+            Dictionary<int, (string, int)> returnDic = null;
+            int index = 0;
+            string[] strs = data.Split(',');
+            while (index < strs.Length)
+            {
+                returnDic.Add(int.Parse(strs[index++]), (strs[index++], int.Parse(strs[index++])));
+            }
+
+            return returnDic;
         }
     }
 }

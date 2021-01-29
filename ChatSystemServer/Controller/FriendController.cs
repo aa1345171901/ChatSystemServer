@@ -1,6 +1,7 @@
 ﻿namespace ChatSystemServer.Controller
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Text;
     using ChatSystemServer.DAO;
@@ -80,7 +81,7 @@
 
             if (dataSet != null)
             {
-                return ((int)ReturnCode.Success).ToString() + BitConverter.ToString(DataSetHelper.GetBinaryFormatDataSet(dataSet));
+                return ((int)ReturnCode.Success).ToString() + BitConverter.ToString(DataHelper.GetBinaryFormatDataSet(dataSet));
             }
             else
             {
@@ -100,6 +101,24 @@
             if (friendDAO.DeleteFriend(client.MySqlConnection, id, friendId))
             {
                 return ((int)ReturnCode.Success).ToString();
+            }
+            else
+            {
+                return ((int)ReturnCode.Fail).ToString();
+            }
+        }
+
+        /// <summary>
+        /// 获取好友列表
+        /// </summary>
+        /// <returns>返回传送给客户端的信息</returns>
+        public string GetFriendList(string data, Client client, Server server)
+        {
+            Dictionary<int, (string, int)> friends = null;
+            friends = friendDAO.GetFriends(client.MySqlConnection, int.Parse(data));
+            if (friends != null)
+            {
+                return ((int)ReturnCode.Success).ToString() + DataHelper.DicToString(friends);
             }
             else
             {
