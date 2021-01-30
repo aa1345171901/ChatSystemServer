@@ -53,6 +53,26 @@
             }
         }
 
+
+        /// <summary>
+        /// 同意添加好友
+        /// </summary>
+        /// <returns>返回反馈信息</returns>
+        public string AgreeAddFriend(string data, Client client, Server server)
+        {
+            string[] strs = data.Split(',');
+            int id = int.Parse(strs[0]);
+            int friendId = int.Parse(strs[1]);
+            if (friendDAO.AgreeAddFriend(client.MySqlConnection, id, friendId))
+            {
+                return ((int)ReturnCode.Success).ToString();
+            }
+            else
+            {
+                return ((int)ReturnCode.Fail).ToString();
+            }
+        }
+
         /// <summary>
         /// 搜索好友请求
         /// 客户端传送的数据为 id,nickName,ageOption,sexOption为空就传输空格或-1

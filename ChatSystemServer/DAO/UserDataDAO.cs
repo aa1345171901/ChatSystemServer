@@ -2,6 +2,8 @@
 namespace ChatSystemServer.DAO
 {
     using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
     using System.IO;
     using System.Text;
     using ChatSystemServer.Model;
@@ -151,18 +153,55 @@ namespace ChatSystemServer.DAO
         /// 将传送过来的头像保存，并且设置该角色的faceid
         /// </summary>
         /// <returns>返回设置是否成功</returns>
-        public bool SetSelfFace(MySqlConnection mySqlConnection, int id, string data)
+        public bool SetSelfFace(MySqlConnection mySqlConnection, int dataid, string data)
         {
-            MemoryStream fs = new MemoryStream();
-            int len = data.Length;
-            byte[] dataBytesImg = Encoding.UTF8.GetBytes(data);
+            MySqlDataReader reader = null;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("insert into face set path=@path", mySqlConnection);
+                string path = AppDomain.CurrentDomain.BaseDirectory + @"\Face\";
+                cmd.Parameters.AddWithValue("path", path);
+                int faceid = 0;
+                faceid = (int)cmd.ExecuteScalar();
+                if (faceid == 0)
+                {
+                    return false;
+                }
 
-            // fs.Write(dataBytesImg, 0, len);
-            // Bitmap Img = new Bitmap(fs);
-            // string filename = name + ".jpg";
-            // Img.Save(@"D:images" + filename, ImageFormat.Jpeg);
-            // fs.Close();
-            return false;
+                cmd.CommandText = "update userdata set faceid=@faceid where id=@dataid";
+                cmd.Parameters.AddWithValue("faceid", faceid);
+                cmd.Parameters.AddWithValue("dataid", dataid);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 0)
+                {
+                    return false;
+                }
+
+                MemoryStream fs = new MemoryStream();
+                byte[] dataBytesImg = Encoding.UTF8.GetBytes(data);
+                int len = dataBytesImg.Length;
+                fs.Write(dataBytesImg, 0, len);
+                Bitmap img = new Bitmap(fs);
+                string filename = faceid + ".jpg";
+                img.Save(path + filename, ImageFormat.Jpeg);
+                cmd.CommandText = "update face set path=@imgpath where id=@faceid";
+                cmd.Parameters.AddWithValue("imagpath", path + filename);
+                cmd.Parameters.AddWithValue("faceid", faceid);
+                fs.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SetSelfFace连接数据库时出错:" + e.Message);
+                return false;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
         }
     }
 }

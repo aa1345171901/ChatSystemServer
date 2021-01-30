@@ -80,6 +80,42 @@ namespace ChatSystemServer.DAO
         }
 
         /// <summary>
+        /// 同意添加好友的操作
+        /// </summary>
+        /// <returns>返回是否成功</returns>
+        public bool AgreeAddFriend(MySqlConnection mySqlConnection, int id, int friendId)
+        {
+            try
+            {
+                // 执行添加操作
+                MySqlCommand cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);
+                cmd.Parameters.AddWithValue("hostFriendId", friendId);
+                cmd.Parameters.AddWithValue("AccetFriendId", id);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 0)
+                {
+                    return false;
+                }
+
+                if (HasAdded(mySqlConnection, id, friendId))
+                {
+                    // 相互添加,如果他未在我的列表中
+                    cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);
+                    cmd.Parameters.AddWithValue("hostfriendid", id);
+                    cmd.Parameters.AddWithValue("accetfriendid", friendId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("agreeAddFriend连接数据库时出错:" + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 查看选择的好友是否已经添加
         /// </summary>
         /// <returns>返回是或否</returns>

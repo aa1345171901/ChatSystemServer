@@ -138,7 +138,17 @@ namespace ChatSystemServer.Controller
         /// <returns>返回设置是否成功</returns>
         public string SetSelfFace(string data, Client client, Server server)
         {
-            return null;
+            string[] strs = data.Split(',');
+            int dataid = int.Parse(strs[0]);
+            string imgData = strs[1];
+            if (_userDataDAO.SetSelfFace(client.MySqlConnection, dataid, imgData))
+            {
+                return ((int)ReturnCode.Success).ToString();
+            }
+            else
+            {
+                return ((int)ReturnCode.Fail).ToString();
+            }
         }
     }
 }

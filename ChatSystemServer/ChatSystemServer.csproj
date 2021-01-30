@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,11 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\BaseController.cs" />
-    <Compile Include="Controller\ChatController.cs" />
+    <Compile Include="Controller\MessageController.cs" />
     <Compile Include="Controller\ControllerManager.cs" />
     <Compile Include="Controller\FriendController.cs" />
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="DAO\FriendDAO.cs" />
+    <Compile Include="DAO\MessageDAO.cs" />
     <Compile Include="DAO\UserDAO.cs" />
     <Compile Include="DAO\UserDataDAO.cs" />
     <Compile Include="Helper\DataHelper.cs" />
