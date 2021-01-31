@@ -1,17 +1,18 @@
 ﻿
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-
 namespace ChatSystemServer.DAO
 {
+    using System;
+    using System.Collections.Generic;
+    using ChatSystemServer.Model;
+    using MySql.Data.MySqlClient;
+
     /// <summary>
     /// 管理数据库messages表
     /// </summary>
     public class MessageDAO
     {
         /// <summary>
-        /// 根据用户id获取未读的消息的message信息
+        /// 根据用户id获取未读的消息的message信息,定期获取
         /// </summary>
         /// <returns>返回数据</returns>
         public List<string> GetUnreadMessage(MySqlConnection mySqlConnection, int id)
@@ -53,6 +54,116 @@ namespace ChatSystemServer.DAO
             catch (Exception e)
             {
                 Console.WriteLine("GetUnreadMessage访问数据库时出错:" + e.Message);
+                return null;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// h获取添加好友的系统消息，并设置消息为已读
+        /// </summary>
+        /// <returns>返回空或者好友信息</returns>
+        public Dictionary<int, (string, int)> GetFriendDataByMessage(MySqlConnection mySqlConnection, int id)
+        {
+            MySqlDataReader reader = null;
+            MySqlDataReader dataReader = null;
+            try
+            {
+                Dictionary<int, (string, int)> msgId_idDicts = new Dictionary<int, (string, int)>();
+                MySqlCommand cmd = new MySqlCommand("select msgid,FromUserId from messages where touserid=@id and messagetype=2 and messagestate=0", mySqlConnection);
+                cmd.Parameters.AddWithValue("id", id);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int msgId = reader.GetInt32("msgid");
+                    int fromUserId = reader.GetInt32("fromuserid");
+
+                    // 将消息状态置为已读
+                    string sql = "UPDATE Messages SET MessageState =1 WHERE msgid=@messageid";
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("messageid", msgId);
+                    cmd.ExecuteNonQuery();
+
+                    // 读取请求人的信息，显示在窗体上
+                    sql = "SELECT NickName, FaceId FROM Userdata,user WHERE user.Id=@fromuserid and user.dataid=userdata.id";
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("fromuserid", fromUserId);
+                    dataReader = cmd.ExecuteReader();
+                    int faceId = dataReader.GetInt32("faceid");
+                    string nickName = dataReader.GetString("nickname");
+                    dataReader.Close();
+                    msgId_idDicts.Add(fromUserId, (nickName, faceId));
+                }
+
+                return msgId_idDicts;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("GetFriendDataByMessage访问数据库时出错:" + e.Message);
+                return null;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 给好友发送消息
+        /// </summary>
+        /// <returns>返回是否发送成功</returns>
+        public bool SendToChat(MySqlConnection mySqlConnection, Messages message)
+        {
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("insert into messages  set fromuserid=@fromuserid,touserid=@touserid,message=@message,sendtime=@sendtime,messagetype=1,messagestate=0", mySqlConnection);
+                cmd.Parameters.AddWithValue("fromuserid", message.FromUserId);
+                cmd.Parameters.AddWithValue("touserid", message.ToUserId);
+                cmd.Parameters.AddWithValue("message", message.Message);
+                cmd.Parameters.AddWithValue("sendtime", message.SendTime);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 0)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SendToChat访问数据库时出错:" + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 接收消息
+        /// </summary>
+        /// <returns>返回获取的消息</returns>
+        public Messages ReceiveToChat(MySqlConnection mySqlConnection, int id, int friendId)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                return null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ReceiveToChat连接数据库时出错:" + e.Message);
                 return null;
             }
             finally

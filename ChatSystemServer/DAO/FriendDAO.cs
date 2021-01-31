@@ -97,7 +97,7 @@ namespace ChatSystemServer.DAO
                     return false;
                 }
 
-                if (HasAdded(mySqlConnection, id, friendId))
+                if (!HasAdded(mySqlConnection, id, friendId))
                 {
                     // 相互添加,如果他未在我的列表中
                     cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);

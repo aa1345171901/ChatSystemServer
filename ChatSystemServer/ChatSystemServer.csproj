@@ -61,6 +61,7 @@
     <Compile Include="DAO\UserDataDAO.cs" />
     <Compile Include="Helper\DataHelper.cs" />
     <Compile Include="Helper\DBHelper.cs" />
+    <Compile Include="Model\Messages.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserData.cs" />
     <Compile Include="Program.cs" />
