@@ -60,7 +60,11 @@ namespace ChatSystemServer.Model
         /// <returns>使用逗号分割</returns>
         public override string ToString()
         {
-            return Message + "," + SendTime.ToLongTimeString();
+            DateTime epoc = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            TimeSpan delta = default(TimeSpan);
+            delta = SendTime.Subtract(epoc);
+            long ticks = (long)delta.TotalMilliseconds;
+            return Message + "," + ticks;
         }
     }
 }

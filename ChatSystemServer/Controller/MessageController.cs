@@ -1,19 +1,18 @@
 ﻿namespace ChatSystemServer.Controller
 {
+    using System;
+    using System.Collections.Generic;
     using ChatSystemServer.DAO;
     using ChatSystemServer.Helper;
     using ChatSystemServer.Model;
     using ChatSystemServer.Servers;
     using Common;
-    using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// 管理聊天信息和系统信息的各种操作
     /// </summary>
     public class MessageController : BaseController
     {
-
         private MessageDAO messageDAO;
 
         /// <summary>
@@ -78,7 +77,8 @@
             int fromUserId = int.Parse(strs[0]);
             int toUserId = int.Parse(strs[1]);
             string message = strs[2];
-            DateTime sendTime = new DateTime(long.Parse(strs[3]));
+            DateTime sendTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            sendTime = sendTime.AddMilliseconds(long.Parse(strs[3]));
             Messages msg = new Messages(fromUserId, toUserId, message, sendTime);
             if (messageDAO.SendToChat(client.MySqlConnection, msg))
             {
@@ -90,6 +90,10 @@
             }
         }
 
+        /// <summary>
+        /// 接收消息
+        /// </summary>
+        /// <returns>返回消息内容和发送时间</returns>
         public string ChatByReceive(string data, Client client, Server server)
         {
             string[] strs = data.Split(',');

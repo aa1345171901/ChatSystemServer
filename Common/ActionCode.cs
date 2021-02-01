@@ -13,5 +13,9 @@ namespace Common
         SearchFriend,
         DeleteFriend,
         GetFriendList,
+        GetUnreadMessage,
+        AddFriendMessageRequest,
+        SendByChat,
+        ChatByReceive,
     }
 }

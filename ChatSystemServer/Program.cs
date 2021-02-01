@@ -16,6 +16,13 @@ namespace ChatSystemServer
         private static void Main(string[] args)
         {
             // string path = System.IO.Directory.GetCurrentDirectory();
+            // DateTime time = DateTime.Now;
+            // DateTime epoc = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            // TimeSpan delta = default(TimeSpan);
+            // delta = time.Subtract(epoc);
+            // long ticks = (long)delta.TotalMilliseconds;
+            // var date = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            // date = date.AddMilliseconds(ticks);
             Server server = new Server("127.0.0.1", 8888);
             server.Start();
             while (true)
