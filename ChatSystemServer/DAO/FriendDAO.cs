@@ -80,6 +80,34 @@ namespace ChatSystemServer.DAO
         }
 
         /// <summary>
+        /// 添加陌生人的操作，可以直接添加
+        /// </summary>
+        /// <returns>返回操作信息</returns>
+        public string AddStranger(MySqlConnection mySqlConnection, int id, int strangerId)
+        {
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("insert into friend set hostfriendid=@hostfriendid,accetfriendid=@accetfriendid", mySqlConnection);
+                cmd.Parameters.AddWithValue("hostfriendid", id);
+                cmd.Parameters.AddWithValue("accetfriendid", strangerId);
+                int result = cmd.ExecuteNonQuery();
+                if (result == 0)
+                {
+                    return "未知错误";
+                }
+                else
+                {
+                    return " ";
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("AddStranger连接数据库发生错误" + e.Message);
+                return "服务器出错";
+            }
+        }
+
+        /// <summary>
         /// 同意添加好友的操作
         /// </summary>
         /// <returns>返回是否成功</returns>
@@ -340,7 +368,7 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    string res = reader.GetString("nickname") + ",";
+                    string res = strangerId + "," + reader.GetString("nickname") + ",";
                     res += reader.GetInt32("faceid");
                     return res;
                 }

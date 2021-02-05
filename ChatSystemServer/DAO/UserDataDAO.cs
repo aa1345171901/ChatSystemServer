@@ -92,7 +92,7 @@ namespace ChatSystemServer.DAO
         /// 通过id修改用户信息
         /// </summary>
         /// <returns>返回更改信息是否成功</returns>
-        public bool ModifyById(MySqlConnection mySqlConnection, int dataid, string nickName, string sex, int age, string name, int starid, int bloodtypeid, int faceId)
+        public bool ModifyById(MySqlConnection mySqlConnection, int dataid, string nickName, string sex, int age, string name, int starid, int bloodtypeid)
         {
             try
             {

@@ -32,18 +32,19 @@ namespace ChatSystemServer.DAO
                     messageState = reader.GetInt32("MessageState");
                     havePlayAdiuo = reader.GetInt32("havePlayAdiuo");
                     string s = fromUserId + "," + messageTypeId + "," + messageState + "," + havePlayAdiuo;
-                    if (messageTypeId == 1 && messageState == 0)
-                    {
-                        cmd.CommandText = "SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid";
-                        cmd.Parameters.AddWithValue("userid", id);
-                        int friendFaceId = Convert.ToInt32(cmd.ExecuteScalar());   // 设置发消息的好友的头像索引
-                        s += "," + friendFaceId;
-                    }
-                    else
-                    {
-                        s += ", ";
-                    }
 
+                    // if (messageTypeId == 1 && messageState == 0)
+                    // {
+                    cmd.CommandText = "SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid";
+                    cmd.Parameters.AddWithValue("userid", id);
+                    int friendFaceId = Convert.ToInt32(cmd.ExecuteScalar());   // 设置发消息的好友的头像索引
+                    s += "," + friendFaceId;
+
+                    // }
+                    // else
+                    // {
+                    //     s += ", ";
+                    // }
                     list.Add(s);
                     cmd.CommandText = "update messages set haveplayadiuo=1 where touserid=@id";
                     cmd.ExecuteNonQuery();

@@ -61,7 +61,7 @@ namespace ChatSystemServer.Controller
             }
             else
             {
-                return ((int)ReturnCode.Success).ToString() + "," + user.Id;
+                return ((int)ReturnCode.Success).ToString() + "," + user.Id + "," + user.DataId;
             }
         }
 
@@ -102,8 +102,7 @@ namespace ChatSystemServer.Controller
             string name = strs[4];
             int starid = int.Parse(strs[5]);
             int bloodtypeid = int.Parse(strs[6]);
-            int faceId = int.Parse(strs[7]);
-            if (_userDataDAO.ModifyById(client.MySqlConnection, dataId, nickName, sex, age, name, starid, bloodtypeid, faceId))
+            if (_userDataDAO.ModifyById(client.MySqlConnection, dataId, nickName, sex, age, name, starid, bloodtypeid))
             {
                 return ((int)ReturnCode.Success).ToString();
             }
@@ -124,7 +123,7 @@ namespace ChatSystemServer.Controller
             int faceId = int.Parse(strs[1]);
             if (_userDataDAO.SetSystemFace(client.MySqlConnection, dataId, faceId))
             {
-                return ((int)ReturnCode.Success).ToString();
+                return ((int)ReturnCode.Success).ToString() + "," + faceId;
             }
             else
             {

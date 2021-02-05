@@ -37,7 +37,7 @@
             int friendId = int.Parse(strs[1]);
             if (friendDAO.HasAdded(client.MySqlConnection, id, friendId))
             {
-                return ((int)ReturnCode.Fail).ToString() + "已添加对方为好友";
+                return ((int)ReturnCode.Fail).ToString() + "," + "已添加对方为好友";
             }
             else
             {
@@ -48,11 +48,37 @@
                 }
                 else
                 {
-                    return ((int)ReturnCode.Fail).ToString() + result;
+                    return ((int)ReturnCode.Fail).ToString() + "," + result;
                 }
             }
         }
 
+        /// <summary>
+        /// 添加列表陌生人的操作
+        /// </summary>
+        /// <returns>返回执行结果</returns>
+        public string AddStranger(string data, Client client, Server server)
+        {
+            string[] strs = data.Split(',');
+            int id = int.Parse(strs[0]);
+            int strangerId = int.Parse(strs[1]);
+            if (friendDAO.HasAdded(client.MySqlConnection, id, strangerId))
+            {
+                return ((int)ReturnCode.Fail).ToString() + "," + "已添加对方为好友";
+            }
+            else
+            {
+                string result = friendDAO.AddStranger(client.MySqlConnection, id, strangerId);
+                if (result == " ")
+                {
+                    return ((int)ReturnCode.Success).ToString();
+                }
+                else
+                {
+                    return ((int)ReturnCode.Fail).ToString() + "," + result;
+                }
+            }
+        }
 
         /// <summary>
         /// 同意添加好友
@@ -101,7 +127,7 @@
 
             if (dataSet != null)
             {
-                return ((int)ReturnCode.Success).ToString() + BitConverter.ToString(DataHelper.GetBinaryFormatDataSet(dataSet));
+                return ((int)ReturnCode.Success).ToString() + "," + BitConverter.ToString(DataHelper.GetBinaryFormatDataSet(dataSet));
             }
             else
             {
@@ -138,7 +164,25 @@
             friends = friendDAO.GetFriends(client.MySqlConnection, int.Parse(data));
             if (friends != null)
             {
-                return ((int)ReturnCode.Success).ToString() + DataHelper.DicToString(friends);
+                return ((int)ReturnCode.Success).ToString() + "," + DataHelper.DicToString(friends);
+            }
+            else
+            {
+                return ((int)ReturnCode.Fail).ToString();
+            }
+        }
+
+        /// <summary>
+        /// 更新陌生人列表请求
+        /// </summary>
+        /// <returns>返回陌生人的昵称和头像</returns>
+        public string UpdateStrangerList(string data, Client client, Server server)
+        {
+            string result = "";
+            result = friendDAO.UpdateStranger(client.MySqlConnection, int.Parse(data));
+            if (result != "")
+            {
+                return ((int)ReturnCode.Success).ToString() + "," + result;
             }
             else
             {

@@ -58,7 +58,7 @@
             Dictionary<int, (string, int)> messageDics = new Dictionary<int, (string, int)>();
             if (messageDics != null)
             {
-                return ((int)ReturnCode.Success).ToString() + DataHelper.DicToString(messageDics);
+                return ((int)ReturnCode.Success).ToString() + "," + DataHelper.DicToString(messageDics);
             }
             else
             {
@@ -103,7 +103,7 @@
             message = messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId);
             if (message != null)
             {
-                return ((int)ReturnCode.Success).ToString() + message.ToString();
+                return ((int)ReturnCode.Success).ToString() + "," + message.ToString();
             }
             else
             {
