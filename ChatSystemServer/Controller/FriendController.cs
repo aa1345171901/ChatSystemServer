@@ -112,11 +112,11 @@
             string ageOption = strs[2];
             string sexOption = strs[3];
             DataSet dataSet = null;
-            if (id != -1 || nickName != " ")
+            if (id != 0 || nickName != "")
             {
                 dataSet = friendDAO.BasicallySearch(client.MySqlConnection, id, nickName);
             }
-            else if (ageOption != " " || sexOption != " ")
+            else if (ageOption != "" || sexOption != "")
             {
                 dataSet = friendDAO.AdvancedSearch(client.MySqlConnection, ageOption, sexOption);
             }
@@ -127,7 +127,7 @@
 
             if (dataSet != null)
             {
-                return ((int)ReturnCode.Success).ToString() + "," + BitConverter.ToString(DataHelper.GetBinaryFormatDataSet(dataSet));
+                return ((int)ReturnCode.Success).ToString() + "," + Encoding.UTF8.GetString(DataHelper.GetBinaryFormatDataSet(dataSet));
             }
             else
             {
