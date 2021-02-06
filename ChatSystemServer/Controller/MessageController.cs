@@ -30,7 +30,6 @@
         /// <returns>返回消息的属性</returns>
         public string GetUnreadMessage(string data, Client client, Server server)
         {
-            string[] strs = data.Split(',');
             List<string> list = null;
             list = messageDAO.GetUnreadMessage(client.MySqlConnection, int.Parse(data));
             if (list != null)
@@ -50,15 +49,19 @@
         }
 
         /// <summary>
-        /// 对好友请求进行响应，获取好友的id和昵称
+        /// 对好友请求进行响应，将消息标为已读
         /// </summary>
         /// <returns>返回获取的信息</returns>
         public string AddFriendMessageRequest(string data, Client client, Server server)
         {
-            Dictionary<int, (string, int)> messageDics = new Dictionary<int, (string, int)>();
-            if (messageDics != null)
+            string[] strs = data.Split(',');
+            int id = int.Parse(strs[0]);
+            int fromUserId = int.Parse(strs[1]);
+            string result = "";
+            result = messageDAO.SetMessageRead(client.MySqlConnection, id, fromUserId);
+            if (result != "")
             {
-                return ((int)ReturnCode.Success).ToString() + "," + DataHelper.DicToString(messageDics);
+                return ((int)ReturnCode.Success).ToString() + "," + result;
             }
             else
             {

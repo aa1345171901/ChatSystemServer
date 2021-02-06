@@ -192,5 +192,59 @@ namespace ChatSystemServer.DAO
                 }
             }
         }
+
+        /// <summary>
+        /// 设置目标消息为已读
+        /// </summary>
+        /// <returns>返回成功与否</returns>
+        public string SetMessageRead(MySqlConnection mySqlConnection, int id, int fromUserId)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                int messageId = 0;
+
+                // 查找一个未读消息
+                MySqlCommand cmd = new MySqlCommand("select msgid from messages where fromuserid=@fromUserId and touserid=@loginid and messagetype=2 and messagestate=0", mySqlConnection);
+                cmd.Parameters.AddWithValue("loginid", id);
+                cmd.Parameters.AddWithValue("fromUserId", fromUserId);
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    messageId = (int)reader["msgid"];
+                }
+
+                // 将消息状态置为已读
+                string sql = "UPDATE Messages SET MessageState =1 WHERE msgid=@messageid";
+                cmd.CommandText = sql;
+                cmd.Parameters.AddWithValue("messageid", messageId);
+                cmd.ExecuteNonQuery();
+
+                sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromuserid";
+                cmd.Parameters.AddWithValue("fromuserid", fromUserId);
+                reader = cmd.ExecuteReader();
+
+                string nickName = "";
+                if (reader.Read())
+                {
+                    nickName = reader["nickName"] as string;
+                }
+
+                return nickName;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SetMessageRead访问数据库时出错:" + e.Message);
+                return "";
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
     }
 }
