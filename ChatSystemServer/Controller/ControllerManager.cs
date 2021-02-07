@@ -22,6 +22,7 @@ namespace ChatSystemServer.Controller
         public ControllerManager(Server server)
         {
             serverSocket = server;
+            InitController();
         }
 
         /// <summary>
@@ -30,6 +31,8 @@ namespace ChatSystemServer.Controller
         public void InitController()
         {
             controllerDict.Add(RequestCode.User, new UserController());
+            controllerDict.Add(RequestCode.Friend, new FriendController());
+            controllerDict.Add(RequestCode.Message, new MessageController());
         }
 
         /// <summary>
@@ -54,14 +57,21 @@ namespace ChatSystemServer.Controller
                 Console.WriteLine("无法得到[" + actionCode + "]所对应的方法，无法处理");
             }
 
-            object[] parameters = new object[] { data, client, serverSocket }; // 方法的参数
-            object rt = info.Invoke(baseController, parameters); // 调用方法的返回值，用于回传给客户端
-            if (rt == null || string.IsNullOrEmpty(rt as string))
+            try
             {
-                return;
-            }
+                object[] parameters = new object[] { data, client, serverSocket }; // 方法的参数
+                object rt = info.Invoke(baseController, parameters); // 调用方法的返回值，用于回传给客户端
+                if (rt == null || string.IsNullOrEmpty(rt as string))
+                {
+                    return;
+                }
 
-            serverSocket.SendResponse(actionCode, client, rt as string);
+                serverSocket.SendResponse(actionCode, client, rt as string);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("方法[" + actionCode + "]所对应的方法出错:" + e.Message);
+            }
         }
     }
 }

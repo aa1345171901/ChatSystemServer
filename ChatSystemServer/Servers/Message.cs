@@ -63,7 +63,7 @@ namespace ChatSystemServer.Servers
             while (true)
             {
                 // int类型4个字节
-                if (startIndex - newDataCount <= 4)
+                if (startIndex <= 4)
                 {
                     return;
                 }
@@ -73,7 +73,7 @@ namespace ChatSystemServer.Servers
                 {
                     RequestCode requestCode = (RequestCode)BitConverter.ToInt32(data, 4);
                     ActionCode actionCode = (ActionCode)BitConverter.ToInt32(data, 8);
-                    string s = BitConverter.ToString(data, 12, count - 8);
+                    string s = Encoding.UTF8.GetString(data, 12, count - 8);
                     onProcessMessage(requestCode, actionCode, s);
 
                     // Console.WriteLine("接收到数据" + s);

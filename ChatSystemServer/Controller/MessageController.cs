@@ -61,11 +61,11 @@
             result = messageDAO.SetMessageRead(client.MySqlConnection, id, fromUserId);
             if (result != "")
             {
-                return ((int)ReturnCode.Success).ToString() + "," + result;
+                return ((int)ReturnCode.Success).ToString() + "," + fromUserId + "," + result;
             }
             else
             {
-                return ((int)ReturnCode.Fail).ToString();
+                return ((int)ReturnCode.Fail).ToString() + "," + fromUserId;
             }
         }
 
@@ -85,11 +85,11 @@
             Messages msg = new Messages(fromUserId, toUserId, message, sendTime);
             if (messageDAO.SendToChat(client.MySqlConnection, msg))
             {
-                return ((int)ReturnCode.Success).ToString();
+                return ((int)ReturnCode.Success).ToString() + "," + toUserId;
             }
             else
             {
-                return ((int)ReturnCode.Fail).ToString();
+                return ((int)ReturnCode.Fail).ToString() + "," + toUserId;
             }
         }
 
@@ -106,11 +106,11 @@
             message = messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId);
             if (message != null)
             {
-                return ((int)ReturnCode.Success).ToString() + "," + message.ToString();
+                return ((int)ReturnCode.Success).ToString() + "," + friendId + "," + message.ToString();
             }
             else
             {
-                return ((int)ReturnCode.Fail).ToString();
+                return ((int)ReturnCode.Fail).ToString() + "," + friendId;
             }
         }
     }

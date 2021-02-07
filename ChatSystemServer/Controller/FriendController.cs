@@ -91,11 +91,11 @@
             int friendId = int.Parse(strs[1]);
             if (friendDAO.AgreeAddFriend(client.MySqlConnection, id, friendId))
             {
-                return ((int)ReturnCode.Success).ToString();
+                return ((int)ReturnCode.Success).ToString() + "," + friendId;
             }
             else
             {
-                return ((int)ReturnCode.Fail).ToString();
+                return ((int)ReturnCode.Fail).ToString() + "," + friendId;
             }
         }
 

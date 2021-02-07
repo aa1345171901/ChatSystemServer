@@ -25,7 +25,7 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    int dataId = reader.GetInt32("dataid");
+                    int dataId = (int)reader["dataid"];
                     return new User(id, password, dataId);
                 }
                 else
