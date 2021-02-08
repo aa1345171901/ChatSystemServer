@@ -27,10 +27,10 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    fromUserId = reader.GetInt32("FromUserId");
-                    messageTypeId = reader.GetInt32("MessageType");
-                    messageState = reader.GetInt32("MessageState");
-                    havePlayAdiuo = reader.GetInt32("havePlayAdiuo");
+                    fromUserId = (int)reader["FromUserId"];
+                    messageTypeId = (int)reader["MessageType"];
+                    messageState = (int)reader["MessageState"];
+                    havePlayAdiuo = (int)reader["havePlayAdiuo"];
                     string s = fromUserId + "," + messageTypeId + "," + messageState + "," + havePlayAdiuo;
 
                     // if (messageTypeId == 1 && messageState == 0)
@@ -82,8 +82,8 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    int msgId = reader.GetInt32("msgid");
-                    int fromUserId = reader.GetInt32("fromuserid");
+                    int msgId = (int)reader["msgid"];
+                    int fromUserId = (int)reader["fromuserid"];
 
                     // 将消息状态置为已读
                     string sql = "UPDATE Messages SET MessageState =1 WHERE msgid=@messageid";
@@ -96,8 +96,8 @@ namespace ChatSystemServer.DAO
                     cmd.CommandText = sql;
                     cmd.Parameters.AddWithValue("fromuserid", fromUserId);
                     dataReader = cmd.ExecuteReader();
-                    int faceId = dataReader.GetInt32("faceid");
-                    string nickName = dataReader.GetString("nickname");
+                    int faceId = (int)dataReader["faceid"];
+                    string nickName = (string)dataReader["nickname"];
                     dataReader.Close();
                     msgId_idDicts.Add(fromUserId, (nickName, faceId));
                 }
@@ -168,9 +168,9 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    msg.Message = reader.GetString("message");
+                    msg.Message = (string)reader["message"];
                     msg.SendTime = Convert.ToDateTime(reader["sendtime"]);
-                    msgId = reader.GetInt32("msgid");
+                    msgId = (int)reader["msgid"];
                 }
 
                 cmd.CommandText = "update messages set messagetstate=1 where msgid=@msgId";

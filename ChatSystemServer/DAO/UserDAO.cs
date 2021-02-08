@@ -62,7 +62,7 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    dataId = reader.GetInt32("id");
+                    dataId = (int)reader["id"];
                     cmd.CommandText = "insert into user set password=@password, dataid=@dataid";
                     cmd.Parameters.AddWithValue("password", password);
                     cmd.Parameters.AddWithValue("dataid", dataId);

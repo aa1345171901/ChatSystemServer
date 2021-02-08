@@ -98,7 +98,7 @@
             catch (Exception e)
             {
                 Close();
-                Console.WriteLine("接收失败" + e.Message);
+                Console.WriteLine("接收失败:" + e.Message);
             }
         }
 

@@ -28,13 +28,13 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    string nickName = reader.GetString("nickname");
-                    string sex = reader.GetString("sex");
-                    int age = reader.GetInt32("age");
-                    string name = reader.GetString("name");
-                    int starId = reader.GetInt32("starid");
-                    int bloodTypeId = reader.GetInt32("bloodtypeid");
-                    int faceId = reader.GetInt32("faceid");
+                    string nickName = reader["nickname"] as string;
+                    string sex = reader["sex"] as string;
+                    int age = (int)reader["age"];
+                    string name = reader["name"] as string;
+                    int starId = (int)reader["starid"];
+                    int bloodTypeId = (int)reader["bloodtypeid"];
+                    int faceId = (int)reader["faceid"];
                     return new UserData(nickName, sex, age, name, starId, bloodTypeId, faceId);
                 }
                 else

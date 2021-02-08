@@ -29,7 +29,7 @@ namespace ChatSystemServer.DAO
                     return "该id违规或者不存在";
                 }
 
-                int friendShipPolicy = reader.GetInt32("FriendshipPolicyId"); // 对方的好友协议，0能直接添加，1需要验证，2不添加好友
+                int friendShipPolicy = (int)reader["FriendshipPolicyId"]; // 对方的好友协议，0能直接添加，1需要验证，2不添加好友
                 if (friendShipPolicy == 1)
                 {
                     cmd.CommandText = "insert into messages set fromuserid=@fromuserid,touserid=@touserid,messagetype=2,messagestate=0";
@@ -334,7 +334,7 @@ namespace ChatSystemServer.DAO
                 Dictionary<int, (string, int)> friendsDic = new Dictionary<int, (string, int)>();
                 while (reader.Read())
                 {
-                    friendsDic.Add(reader.GetInt32("accetFriendId"), (reader.GetString("NickName"), reader.GetInt32("FaceId")));
+                    friendsDic.Add((int)reader["accetFriendId"], ((string)reader["NickName"], (int)reader["FaceId"]));
                 }
 
                 reader.Close();
@@ -368,8 +368,8 @@ namespace ChatSystemServer.DAO
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    string res = strangerId + "," + reader.GetString("nickname") + ",";
-                    res += reader.GetInt32("faceid");
+                    string res = strangerId + "," + (string)reader["nickname"] + ",";
+                    res += (int)reader["faceid"];
                     return res;
                 }
                 else
