@@ -32,8 +32,10 @@ namespace ChatSystemServer.DAO
                     string sex = reader["sex"] as string;
                     int age = (int)reader["age"];
                     string name = reader["name"] as string;
-                    int starId = (int)reader["starid"];
-                    int bloodTypeId = (int)reader["bloodtypeid"];
+                    int starId = 0;
+                    int.TryParse(reader["starid"] as string, out starId);
+                    int bloodTypeId = 0;
+                    int.TryParse(reader["bloodtypeid"] as string, out starId);
                     int faceId = (int)reader["faceid"];
                     return new UserData(nickName, sex, age, name, starId, bloodTypeId, faceId);
                 }
