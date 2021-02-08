@@ -82,6 +82,11 @@ namespace ChatSystemServer.Helper
                 returnValue += item.Value.Item2 + ",";
             }
 
+            if (returnValue.Length - 2 > 0)
+            {
+                returnValue = returnValue.Substring(0, returnValue.Length - 2);
+            }
+
             return returnValue;
         }
 
@@ -91,7 +96,7 @@ namespace ChatSystemServer.Helper
         /// <returns>返回转换好的字典</returns>
         public static Dictionary<int, (string, int)> StringToDic(string data)
         {
-            Dictionary<int, (string, int)> returnDic = null;
+            Dictionary<int, (string, int)> returnDic = new Dictionary<int, (string, int)>();
             int index = 0;
             string[] strs = data.Split(',');
             while (index < strs.Length)

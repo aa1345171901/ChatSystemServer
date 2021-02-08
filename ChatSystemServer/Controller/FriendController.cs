@@ -160,9 +160,9 @@
         /// <returns>返回传送给客户端的信息</returns>
         public string GetFriendList(string data, Client client, Server server)
         {
-            Dictionary<int, (string, int)> friends = null;
+            Dictionary<int, (string, int)> friends;
             friends = friendDAO.GetFriends(client.MySqlConnection, int.Parse(data));
-            if (friends != null)
+            if (friends.Count != 0)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + DataHelper.DicToString(friends);
             }
