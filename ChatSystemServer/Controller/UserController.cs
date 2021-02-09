@@ -74,7 +74,8 @@ namespace ChatSystemServer.Controller
             string[] strs = data.Split(',');
             int dataId = int.Parse(strs[0]);
             string sex = strs[1];
-            int age = int.Parse(strs[2]);
+            int age = 0;
+            int.TryParse(strs[2], out age);
             string name = strs[3];
             int starid = int.Parse(strs[4]);
             int bloodtypeid = int.Parse(strs[5]);
@@ -98,7 +99,8 @@ namespace ChatSystemServer.Controller
             int dataId = int.Parse(strs[0]);
             string nickName = strs[1];
             string sex = strs[2];
-            int age = int.Parse(strs[3]);
+            int age = 0;
+            int.TryParse(strs[3], out age);
             string name = strs[4];
             int starid = int.Parse(strs[5]);
             int bloodtypeid = int.Parse(strs[6]);

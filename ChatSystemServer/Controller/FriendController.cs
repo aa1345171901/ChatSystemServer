@@ -107,7 +107,8 @@
         public string SearchFriend(string data, Client client, Server server)
         {
             string[] strs = data.Split(',');
-            int id = int.Parse(strs[0]);
+            int id = 0;
+            int.TryParse(strs[0], out id);
             string nickName = strs[1];
             string ageOption = strs[2];
             string sexOption = strs[3];
@@ -125,7 +126,7 @@
                 dataSet = friendDAO.RandomSearch(client.MySqlConnection);
             }
 
-            if (dataSet.Tables.Count != 0)
+            if (dataSet != null && dataSet.Tables.Count != 0)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + Encoding.UTF8.GetString(DataHelper.GetBinaryFormatDataSet(dataSet));
             }

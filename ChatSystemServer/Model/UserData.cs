@@ -9,8 +9,9 @@ namespace ChatSystemServer.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="UserData"/> class.
         /// </summary>
-        public UserData(string nickName, string sex, int age, string name, int starId, int bloodTypeId, int faceId)
+        public UserData(int id, string nickName, string sex, int age, string name, int starId, int bloodTypeId, int faceId)
         {
+            Id = id;
             NickName = nickName;
             Sex = sex;
             Age = age;
@@ -66,7 +67,7 @@ namespace ChatSystemServer.Model
         /// <returns>返回字符串使用'，'分割</returns>
         public string GetString()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6}", NickName, Sex, Age, Name, StarId, BloodTypeId, FaceId);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", Id, NickName, Sex, Age, Name, StarId, BloodTypeId, FaceId);
         }
     }
 }

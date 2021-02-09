@@ -56,9 +56,11 @@ namespace ChatSystemServer.DAO
             MySqlDataReader reader = null;
             try
             {
-                int dataId;
+                int dataId = 0;
                 MySqlCommand cmd = new MySqlCommand("insert into userdata set nickname=@nickName", mysqlConnection);
                 cmd.Parameters.AddWithValue("nickName", nickName);
+                cmd.ExecuteNonQuery();
+                cmd.CommandText = "select id from userdata order by id desc limit 1";
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
@@ -66,6 +68,7 @@ namespace ChatSystemServer.DAO
                     cmd.CommandText = "insert into user set password=@password, dataid=@dataid";
                     cmd.Parameters.AddWithValue("password", password);
                     cmd.Parameters.AddWithValue("dataid", dataId);
+                    reader.Close();
                     int result = cmd.ExecuteNonQuery();
                     if (result == 1)
                     {

@@ -33,11 +33,11 @@ namespace ChatSystemServer.DAO
                     int age = (int)reader["age"];
                     string name = reader["name"] as string;
                     int starId = 0;
-                    int.TryParse(reader["starid"] as string, out starId);
+                    int.TryParse(reader["starid"].ToString(), out starId);
                     int bloodTypeId = 0;
-                    int.TryParse(reader["bloodtypeid"] as string, out starId);
+                    int.TryParse(reader["bloodtypeid"].ToString(), out bloodTypeId);
                     int faceId = (int)reader["faceid"];
-                    return new UserData(nickName, sex, age, name, starId, bloodTypeId, faceId);
+                    return new UserData(dataid, nickName, sex, age, name, starId, bloodTypeId, faceId);
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace ChatSystemServer.DAO
         {
             try
             {
-                MySqlCommand cmd = new MySqlCommand("update userdata set sex=@sex,age=@age,name=@name,starid=@starid,bloodtypeid=@bloodtypeid where id=@dataid");
+                MySqlCommand cmd = new MySqlCommand("update userdata set sex=@sex,age=@age,name=@name,starid=@starid,bloodtypeid=@bloodtypeid where id=@dataid", mySqlConnection);
                 cmd.Parameters.AddWithValue("sex", sex);
                 cmd.Parameters.AddWithValue("age", age);
                 cmd.Parameters.AddWithValue("name", name);
