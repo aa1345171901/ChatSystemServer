@@ -125,7 +125,7 @@
                 dataSet = friendDAO.RandomSearch(client.MySqlConnection);
             }
 
-            if (dataSet != null)
+            if (dataSet.Tables.Count != 0)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + Encoding.UTF8.GetString(DataHelper.GetBinaryFormatDataSet(dataSet));
             }

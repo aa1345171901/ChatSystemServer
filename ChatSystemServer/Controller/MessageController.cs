@@ -32,7 +32,7 @@
         {
             List<string> list = null;
             list = messageDAO.GetUnreadMessage(client.MySqlConnection, int.Parse(data));
-            if (list != null)
+            if (list.Count != 0)
             {
                 string resData = "";
                 foreach (var item in list)
@@ -104,7 +104,7 @@
             int friendId = int.Parse(strs[1]);
             Messages message = null;
             message = messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId);
-            if (message != null)
+            if (message.SendTime != null)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + friendId + "," + message.ToString();
             }
