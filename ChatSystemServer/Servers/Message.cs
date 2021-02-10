@@ -44,11 +44,11 @@ namespace ChatSystemServer.Servers
         /// <returns>用字节数组传输</returns>
         public static byte[] PackData(ActionCode actionCode, string data)
         {
-            byte[] requestCodeBytes = BitConverter.GetBytes((int)actionCode);
+            byte[] actionCodeeBytes = BitConverter.GetBytes((int)actionCode);
             byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-            int dataAmount = requestCodeBytes.Length + dataBytes.Length;
+            int dataAmount = actionCodeeBytes.Length + dataBytes.Length;
             byte[] dataAmountBytes = BitConverter.GetBytes(dataAmount);
-            byte[] newBytes = dataAmountBytes.Concat(requestCodeBytes).ToArray<byte>();
+            byte[] newBytes = dataAmountBytes.Concat(actionCodeeBytes).ToArray<byte>();
             return newBytes.Concat(dataBytes).ToArray<byte>();
         }
 

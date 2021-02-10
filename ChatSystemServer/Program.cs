@@ -25,10 +25,7 @@ namespace ChatSystemServer
             // date = date.AddMilliseconds(ticks);
             Server server = new Server("127.0.0.1", 8888);
             server.Start();
-            while (true)
-            {
-                Console.Read();
-            }
+            Console.Read();
         }
     }
 }

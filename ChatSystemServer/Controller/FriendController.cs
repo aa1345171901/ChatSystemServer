@@ -128,7 +128,7 @@
 
             if (dataSet != null && dataSet.Tables.Count != 0)
             {
-                return ((int)ReturnCode.Success).ToString() + "," + Encoding.UTF8.GetString(DataHelper.GetBinaryFormatDataSet(dataSet));
+                return ((int)ReturnCode.Success).ToString() + "," + DataHelper.GetStringFromTable(dataSet);
             }
             else
             {
