@@ -135,13 +135,13 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("faceid", faceId);
                 cmd.Parameters.AddWithValue("dataid", dataId);
                 int result = cmd.ExecuteNonQuery();
-                if (result == 0)
+                if (result == 1)
                 {
-                    return false;
+                    return true;
                 }
                 else
                 {
-                    return true;
+                    return false;
                 }
             }
             catch (Exception e)
@@ -165,7 +165,7 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("path", path);
                 int faceid = 0;
                 faceid = (int)cmd.ExecuteScalar();
-                if (faceid == 0)
+                if (faceid != 1)
                 {
                     return false;
                 }
@@ -174,7 +174,7 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("faceid", faceid);
                 cmd.Parameters.AddWithValue("dataid", dataid);
                 int result = cmd.ExecuteNonQuery();
-                if (result == 0)
+                if (result != 1)
                 {
                     return false;
                 }

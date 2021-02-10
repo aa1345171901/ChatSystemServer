@@ -32,12 +32,12 @@
         {
             List<string> list = null;
             list = messageDAO.GetUnreadMessage(client.MySqlConnection, int.Parse(data));
-            if (list.Count != 0)
+            if (list != null && list.Count != 0)
             {
                 string resData = "";
                 foreach (var item in list)
                 {
-                    resData += item + "-"; // 使用“-”将不同信息分割
+                    resData += item; // 使用“-”将不同信息分割
                 }
 
                 return ((int)ReturnCode.Success).ToString() + "," + resData;

@@ -32,11 +32,11 @@ namespace ChatSystemServer.DAO
                     messageState = (int)reader["MessageState"];
                     havePlayAdiuo = (int)reader["havePlayAdiuo"];
                     string s = fromUserId + "," + messageTypeId + "," + messageState + "," + havePlayAdiuo;
-
+                    reader.Close();
                     // if (messageTypeId == 1 && messageState == 0)
                     // {
                     cmd.CommandText = "SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid";
-                    cmd.Parameters.AddWithValue("userid", id);
+                    cmd.Parameters.AddWithValue("userid", fromUserId);
                     int friendFaceId = Convert.ToInt32(cmd.ExecuteScalar());   // 设置发消息的好友的头像索引
                     s += "," + friendFaceId;
 

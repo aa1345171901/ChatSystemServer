@@ -24,25 +24,43 @@ namespace ChatSystemServer.DAO
             {
                 MySqlCommand cmd = new MySqlCommand("select FriendshipPolicyId from userdata where id=@id", mySqlConnection);
                 cmd.Parameters.AddWithValue("id", friendId);
+                reader = cmd.ExecuteReader();
                 if (!reader.Read())
                 {
                     return "该id违规或者不存在";
                 }
 
                 int friendShipPolicy = (int)reader["FriendshipPolicyId"]; // 对方的好友协议，0能直接添加，1需要验证，2不添加好友
+                reader.Close();
                 if (friendShipPolicy == 1)
                 {
-                    cmd.CommandText = "insert into messages set fromuserid=@fromuserid,touserid=@touserid,messagetype=2,messagestate=0";
+                    cmd.CommandText = "select msgid from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=2 and messagestate=0";
                     cmd.Parameters.AddWithValue("fromuserid", id);
                     cmd.Parameters.AddWithValue("touserid", friendId);
-                    int result = cmd.ExecuteNonQuery();
-                    if (result == 0)
+                    reader = cmd.ExecuteReader();
+                    if (reader.Read())
                     {
-                        return "未知错误";
+                        int n = 0;
+                        int.TryParse(reader["msgid"].ToString(), out n);
+                        if (n != 0)
+                        {
+                            return " ";
+                        }
+                    }
+
+                    reader.Close();
+
+                    DateTime sendTime = DateTime.Now;
+                    cmd.CommandText = "insert into messages set fromuserid=@fromuserid,touserid=@touserid,messagetype=2,messagestate=0,sendTime=@sendtime";
+                    cmd.Parameters.AddWithValue("sendTime", sendTime);
+                    int result = cmd.ExecuteNonQuery();
+                    if (result == 1)
+                    {
+                        return " ";
                     }
                     else
                     {
-                        return " ";
+                        return "未知错误";
                     }
                 }
                 else if (friendShipPolicy == 0)
@@ -51,13 +69,13 @@ namespace ChatSystemServer.DAO
                     cmd.Parameters.AddWithValue("hostfriendid", id);
                     cmd.Parameters.AddWithValue("accetfriendid", friendId);
                     int result = cmd.ExecuteNonQuery();
-                    if (result == 0)
+                    if (result == 1)
                     {
-                        return "未知错误";
+                        return " ";
                     }
                     else
                     {
-                        return " ";
+                        return "未知错误";
                     }
                 }
                 else
@@ -91,13 +109,13 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("hostfriendid", id);
                 cmd.Parameters.AddWithValue("accetfriendid", strangerId);
                 int result = cmd.ExecuteNonQuery();
-                if (result == 0)
+                if (result == 1)
                 {
-                    return "未知错误";
+                    return " ";
                 }
                 else
                 {
-                    return " ";
+                    return "未知错误";
                 }
             }
             catch (Exception e)
@@ -120,7 +138,7 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("hostFriendId", friendId);
                 cmd.Parameters.AddWithValue("AccetFriendId", id);
                 int result = cmd.ExecuteNonQuery();
-                if (result == 0)
+                if (result != 1)
                 {
                     return false;
                 }
@@ -155,13 +173,13 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("hostfriendid", id);
                 cmd.Parameters.AddWithValue("accetfriendid", friendId);
                 int result = cmd.ExecuteNonQuery();
-                if (result == 0)
+                if (result == 1)
                 {
-                    return false;
+                    return true;
                 }
                 else
                 {
-                    return true;
+                    return false;
                 }
             }
             catch (Exception e)
@@ -224,15 +242,15 @@ namespace ChatSystemServer.DAO
                 string ageCondition = ageOption;
                 string sexCondition = sexOption;
 
-                if (ageCondition != " " && sexCondition == " ")
+                if (ageCondition != "" && sexCondition == "")
                 {
                     sql += string.Format(" WHERE {0} and userdata.id=user.dataid", ageCondition);
                 }
-                else if (ageCondition == " " && sexCondition != " ")
+                else if (ageCondition == "" && sexCondition != "")
                 {
                     sql += string.Format(" WHERE Sex='{0}' and userdata.id=user.dataid", sexCondition);
                 }
-                else if (ageCondition != " " && sexCondition != " ")
+                else if (ageCondition != "" && sexCondition != "")
                 {
                     sql += string.Format(" WHERE {0} AND Sex='{1}' and userdata.id=user.dataid", ageCondition, sexCondition);
                 }
@@ -303,13 +321,13 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("hostFriendId", id);
                 cmd.Parameters.AddWithValue("accetFriendId", friendId);
                 int result = cmd.ExecuteNonQuery();
-                if (result == 0)
+                if (result == 1)
                 {
-                    return false;
+                    return true;
                 }
                 else
                 {
-                    return true;
+                    return false;
                 }
             }
             catch (Exception e)

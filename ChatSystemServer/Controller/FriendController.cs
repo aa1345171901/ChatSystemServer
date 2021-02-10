@@ -35,6 +35,11 @@
             string[] strs = data.Split(',');
             int id = int.Parse(strs[0]);
             int friendId = int.Parse(strs[1]);
+            if (id == friendId)
+            {
+                return ((int)ReturnCode.Fail).ToString() + "," + "不能添加自己";
+            }
+
             if (friendDAO.HasAdded(client.MySqlConnection, id, friendId))
             {
                 return ((int)ReturnCode.Fail).ToString() + "," + "已添加对方为好友";
@@ -126,7 +131,7 @@
                 dataSet = friendDAO.RandomSearch(client.MySqlConnection);
             }
 
-            if (dataSet != null && dataSet.Tables.Count != 0)
+            if (dataSet != null && dataSet.Tables[0].Rows.Count != 0)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + DataHelper.GetStringFromTable(dataSet);
             }
