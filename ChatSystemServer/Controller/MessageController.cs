@@ -30,14 +30,16 @@
         /// <returns>返回消息的属性</returns>
         public string GetUnreadMessage(string data, Client client, Server server)
         {
-            List<string> list = null;
-            list = messageDAO.GetUnreadMessage(client.MySqlConnection, int.Parse(data));
-            if (list != null && list.Count != 0)
+            Dictionary<int, string> dict = null;
+            dict = messageDAO.GetUnreadMessage(client.MySqlConnection, int.Parse(data));
+            if (dict != null && dict.Count != 0)
             {
                 string resData = "";
-                foreach (var item in list)
+                foreach (var item in dict)
                 {
-                    resData += item; // 使用“-”将不同信息分割
+                    resData += item.Key;
+                    resData += "_" + item.Value;
+                    resData += "-"; // 使用“-”将不同信息分割
                 }
 
                 return ((int)ReturnCode.Success).ToString() + "," + resData;

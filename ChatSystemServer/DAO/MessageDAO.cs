@@ -15,42 +15,50 @@ namespace ChatSystemServer.DAO
         /// 根据用户id获取未读的消息的message信息,定期获取
         /// </summary>
         /// <returns>返回数据</returns>
-        public List<string> GetUnreadMessage(MySqlConnection mySqlConnection, int id)
+        public Dictionary<int, string> GetUnreadMessage(MySqlConnection mySqlConnection, int id)
         {
             MySqlDataReader reader = null;
             try
             {
-                List<string> list = new List<string>();
-                int fromUserId = 0, messageTypeId = 0, messageState = 0, havePlayAdiuo = 0;
-                MySqlCommand cmd = new MySqlCommand("select  FromUserId, MessageType, MessageState,havePlayAdiuo,msgId from Messages where touserid=@id and messagestate=0", mySqlConnection);
+                Dictionary<int, string> dict1 = new Dictionary<int, string>();
+                Dictionary<int, string> dict2 = new Dictionary<int, string>();
+                int msgid = 0, fromUserId = 0, messageTypeId = 0, messageState = 0, havePlayAdiuo = 0;
+                MySqlCommand cmd = new MySqlCommand("select  msgid, FromUserId, MessageType, MessageState,havePlayAdiuo,msgId from Messages where touserid=@id and messagestate=0", mySqlConnection);
                 cmd.Parameters.AddWithValue("id", id);
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    msgid = (int)reader["msgid"];
                     fromUserId = (int)reader["FromUserId"];
                     messageTypeId = (int)reader["MessageType"];
                     messageState = (int)reader["MessageState"];
                     havePlayAdiuo = (int)reader["havePlayAdiuo"];
                     string s = fromUserId + "," + messageTypeId + "," + messageState + "," + havePlayAdiuo;
-                    reader.Close();
+                    dict1.Add(msgid, s);
+                }
+
+                reader.Close();
+
+                foreach (var item in dict1)
+                {
                     // if (messageTypeId == 1 && messageState == 0)
                     // {
                     cmd.CommandText = "SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid";
                     cmd.Parameters.AddWithValue("userid", fromUserId);
                     int friendFaceId = Convert.ToInt32(cmd.ExecuteScalar());   // 设置发消息的好友的头像索引
-                    s += "," + friendFaceId;
-
+                    string s = item.Value + "," + friendFaceId;
+                    dict2.Add(item.Key, s);
                     // }
                     // else
                     // {
                     //     s += ", ";
                     // }
-                    list.Add(s);
-                    cmd.CommandText = "update messages set haveplayadiuo=1 where touserid=@id";
-                    cmd.ExecuteNonQuery();
                 }
 
-                return list;
+                cmd.CommandText = "update messages set haveplayadiuo=1 where touserid=@id";
+                cmd.ExecuteNonQuery();
+
+                return dict2;
             }
             catch (Exception e)
             {
