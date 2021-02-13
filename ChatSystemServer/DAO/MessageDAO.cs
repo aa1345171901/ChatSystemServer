@@ -223,20 +223,22 @@ namespace ChatSystemServer.DAO
                     messageId = (int)reader["msgid"];
                 }
 
+                reader.Close();
+
                 // 将消息状态置为已读
                 string sql = "UPDATE Messages SET MessageState =1 WHERE msgid=@messageid";
                 cmd.CommandText = sql;
                 cmd.Parameters.AddWithValue("messageid", messageId);
                 cmd.ExecuteNonQuery();
 
-                sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromuserid";
-                cmd.Parameters.AddWithValue("fromuserid", fromUserId);
+                sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromUserId";
+                cmd.CommandText = sql;
                 reader = cmd.ExecuteReader();
 
                 string nickName = "";
                 if (reader.Read())
                 {
-                    nickName = reader["nickName"] as string;
+                    nickName = reader["nickName"].ToString();
                 }
 
                 return nickName;
