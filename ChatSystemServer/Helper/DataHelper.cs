@@ -84,9 +84,9 @@ namespace ChatSystemServer.Helper
                 returnValue += item.Value.Item2 + ",";
             }
 
-            if (returnValue.Length - 2 > 0)
+            if (returnValue.Length - 1 > 0)
             {
-                returnValue = returnValue.Substring(0, returnValue.Length - 2);
+                returnValue = returnValue.Substring(0, returnValue.Length - 1);
             }
 
             return returnValue;

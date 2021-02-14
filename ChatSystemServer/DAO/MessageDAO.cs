@@ -168,7 +168,7 @@ namespace ChatSystemServer.DAO
             MySqlDataReader reader = null;
             try
             {
-                Messages msg = null;
+                Messages msg = new Messages();
                 int msgId = 0;
                 MySqlCommand cmd = new MySqlCommand("select msgid,message,sendtime from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=1 and messagestate=0 order by sendtime asc limit 1", mySqlConnection);
                 cmd.Parameters.AddWithValue("fromuserid", friendId);
@@ -180,8 +180,13 @@ namespace ChatSystemServer.DAO
                     msg.SendTime = Convert.ToDateTime(reader["sendtime"]);
                     msgId = (int)reader["msgid"];
                 }
+                else
+                {
+                    return null;
+                }
 
-                cmd.CommandText = "update messages set messagetstate=1 where msgid=@msgId";
+                reader.Close();
+                cmd.CommandText = "update messages set messagestate=1 where msgid=@msgId";
                 cmd.Parameters.AddWithValue("msgId", msgId);
                 cmd.ExecuteNonQuery();
 

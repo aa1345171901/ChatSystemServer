@@ -20,6 +20,14 @@ namespace ChatSystemServer.Model
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Messages"/> class.
+        /// 默认构造
+        /// </summary>
+        public Messages()
+        {
+        }
+
+        /// <summary>
         /// 消息id,自增
         /// </summary>
         public int MsgId { get; set; }

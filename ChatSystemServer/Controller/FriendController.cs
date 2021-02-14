@@ -168,7 +168,7 @@
         {
             Dictionary<int, (string, int)> friends;
             friends = friendDAO.GetFriends(client.MySqlConnection, int.Parse(data));
-            if (friends.Count != 0)
+            if (friends != null && friends.Count != 0)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + DataHelper.DicToString(friends);
             }
