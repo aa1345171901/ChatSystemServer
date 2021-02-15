@@ -381,7 +381,7 @@ namespace ChatSystemServer.DAO
             MySqlDataReader reader = null;
             try
             {
-                MySqlCommand cmd = new MySqlCommand("select nickname, faceid from userdata,user where user.id=@id and user.dataid=userdata.id");
+                MySqlCommand cmd = new MySqlCommand("select nickname, faceid from userdata,user where user.id=@id and user.dataid=userdata.id", mySqlConnection);
                 cmd.Parameters.AddWithValue("id", strangerId);
                 reader = cmd.ExecuteReader();
                 if (reader.Read())

@@ -122,6 +122,11 @@
         /// </summary>
         private void Close()
         {
+            if (clientSocket != null)
+            {
+                clientSocket.Close();
+            }
+
             DBHelper.Close(mySqlConnection);
         }
     }
