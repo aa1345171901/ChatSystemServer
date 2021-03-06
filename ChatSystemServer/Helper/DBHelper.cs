@@ -11,7 +11,7 @@
         /// <summary>
         /// 连接数据库的字符串
         /// </summary>
-        public const string CONNECTIONSTRING = "database=cs(chat system);data source=127.0.0.1;port=3306;user=root;password=root;";
+        public const string CONNECTIONSTRING = "database=chat_system;data source=127.0.0.1;port=3306;user=root;password=root;";
 
         /// <summary>
         /// 返回一个MySqlConnection给服务器用于操作数据库
