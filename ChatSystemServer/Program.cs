@@ -23,7 +23,7 @@ namespace ChatSystemServer
             // long ticks = (long)delta.TotalMilliseconds;
             // var date = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
             // date = date.AddMilliseconds(ticks);
-            Server server = new Server("127.0.0.1", 8888);
+            Server server = new Server("172.22.79.220", 8888);
             server.Start();
             Console.Read();
         }
