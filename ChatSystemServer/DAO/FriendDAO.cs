@@ -134,19 +134,22 @@ namespace ChatSystemServer.DAO
             try
             {
                 // 执行添加操作
-                MySqlCommand cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);
-                cmd.Parameters.AddWithValue("hostFriendId", friendId);
-                cmd.Parameters.AddWithValue("AccetFriendId", id);
-                int result = cmd.ExecuteNonQuery();
-                if (result != 1)
+                if (!HasAdded(mySqlConnection, friendId, id))
                 {
-                    return false;
+                    MySqlCommand cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);
+                    cmd.Parameters.AddWithValue("hostFriendId", friendId);
+                    cmd.Parameters.AddWithValue("AccetFriendId", id);
+                    int result = cmd.ExecuteNonQuery();
+                    if (result != 1)
+                    {
+                        return false;
+                    }
                 }
 
                 if (!HasAdded(mySqlConnection, id, friendId))
                 {
                     // 相互添加,如果他未在我的列表中
-                    cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);
+                    MySqlCommand cmd = new MySqlCommand("insert into friend set hostFriendid=@hostFriendId,AccetFriendId=@AccetFriendId", mySqlConnection);
                     cmd.Parameters.AddWithValue("hostfriendid", id);
                     cmd.Parameters.AddWithValue("accetfriendid", friendId);
                     cmd.ExecuteNonQuery();
