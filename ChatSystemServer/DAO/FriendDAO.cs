@@ -34,10 +34,18 @@ namespace ChatSystemServer.DAO
                 reader.Close();
                 if (friendShipPolicy == 1)
                 {
+                    // 先查看对方是否是你的好友
+                    if (HasAdded(mySqlConnection, id, friendId))
+                    {
+                        return "已经添加对方为好友";
+                    }
+
                     cmd.CommandText = "select msgid from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=2 and messagestate=0";
                     cmd.Parameters.AddWithValue("fromuserid", id);
                     cmd.Parameters.AddWithValue("touserid", friendId);
                     reader = cmd.ExecuteReader();
+
+                    // 已经发送一条添加好友请求
                     if (reader.Read())
                     {
                         int n = 0;
@@ -170,13 +178,14 @@ namespace ChatSystemServer.DAO
         /// <returns>返回是或否</returns>
         public bool HasAdded(MySqlConnection mySqlConnection, int id, int friendId)
         {
+            MySqlDataReader reader = null;
             try
             {
-                MySqlCommand cmd = new MySqlCommand("select count(*) from friend where hostfriendid=@hostfriendid and accetfriendid=@accetfriendid", mySqlConnection);
+                MySqlCommand cmd = new MySqlCommand("select * from friend where hostfriendid=@hostfriendid and accetfriendid=@accetfriendid", mySqlConnection);
                 cmd.Parameters.AddWithValue("hostfriendid", id);
                 cmd.Parameters.AddWithValue("accetfriendid", friendId);
-                int result = cmd.ExecuteNonQuery();
-                if (result == 1)
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
                     return true;
                 }
@@ -189,6 +198,13 @@ namespace ChatSystemServer.DAO
             {
                 Console.WriteLine("HasAdded连接数据库时出错：" + e.Message);
                 return false;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
         }
 

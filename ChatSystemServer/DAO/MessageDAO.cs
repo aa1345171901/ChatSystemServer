@@ -43,9 +43,9 @@ namespace ChatSystemServer.DAO
                 {
                     // if (messageTypeId == 1 && messageState == 0)
                     // {
-                    cmd.CommandText = "SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid";
-                    cmd.Parameters.AddWithValue("userid", fromUserId);
-                    int friendFaceId = Convert.ToInt32(cmd.ExecuteScalar());   // 设置发消息的好友的头像索引
+                    MySqlCommand cmdGet = new MySqlCommand("SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid",mySqlConnection);
+                    cmdGet.Parameters.AddWithValue("userid", int.Parse(item.Value.Split(',')[1]));
+                    int friendFaceId = Convert.ToInt32(cmdGet.ExecuteScalar());   // 设置发消息的好友的头像索引
                     string s = item.Value + "," + friendFaceId;
                     dict2.Add(item.Key, s);
                     // }
