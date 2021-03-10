@@ -44,7 +44,7 @@
         {
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             serverSocket.Bind(_ipEndPoint);
-            serverSocket.Listen(0);
+            serverSocket.Listen(5);
             serverSocket.BeginAccept(AcceptCallBack, null);
         }
 

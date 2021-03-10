@@ -11,7 +11,14 @@
         /// <summary>
         /// 连接数据库的字符串
         /// </summary>
-        public const string CONNECTIONSTRING = "database=chat_system;data source=127.0.0.1;port=3306;user=root;password=root;";
+        public const string CONNECTIONSTRING = "database=chat_system;data source=127.0.0.1;port=3306;user=root;password=root;charset=utf8;";
+
+        /* 解决一段时间后mysql连接不上的问题
+         * mysql -u root -p
+         * show variables like '%timeout%';.
+         * set interactive_timeout= 31536000;
+         * set wait_timeout=31536000;
+         */
 
         /// <summary>
         /// 返回一个MySqlConnection给服务器用于操作数据库
