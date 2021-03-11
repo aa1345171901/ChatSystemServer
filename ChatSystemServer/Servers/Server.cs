@@ -1,6 +1,7 @@
 ﻿namespace ChatSystemServer.Servers
 {
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
     using ChatSystemServer.Controller;
@@ -14,7 +15,7 @@
         private IPEndPoint _ipEndPoint;
         private Socket serverSocket;
 
-        private ControllerManager controller;
+        private ControllerManager controller;  // 单一控制实例
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Server"/> class.

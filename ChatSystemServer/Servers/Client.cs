@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net.Sockets;
+    using System.Threading;
     using ChatSystemServer.Helper;
     using ChatSystemServer.Model;
     using Common;
@@ -65,6 +66,7 @@
             }
             catch (Exception e)
             {
+                Close();
                 Console.WriteLine("发送给客户端回应失败" + e.Message);
             }
         }
@@ -81,19 +83,21 @@
         {
             try
             {
-                if (clientSocket == null || clientSocket.Connected == false)
+                if (clientSocket != null && clientSocket.Connected)
                 {
-                    return;
-                }
+                    int count = clientSocket.EndReceive(ar);
+                    if (count <= 0)
+                    {
+                        Close();
+                    }
 
-                int count = clientSocket.EndReceive(ar);
-                if (count <= 0)
+                    message.ReadMessage(count, OnProcessMessage);
+                    Start();
+                }
+                else
                 {
                     Close();
                 }
-
-                message.ReadMessage(count, OnProcessMessage);
-                Start();
             }
             catch (Exception e)
             {
@@ -122,12 +126,17 @@
         /// </summary>
         private void Close()
         {
+            DBHelper.Close(mySqlConnection);
+            if (clientSocket != null && clientSocket.Connected)
+            {
+                clientSocket.Shutdown(SocketShutdown.Both);
+                Thread.Sleep(10);
+            }
+
             if (clientSocket != null)
             {
                 clientSocket.Close();
             }
-
-            DBHelper.Close(mySqlConnection);
         }
     }
 }
