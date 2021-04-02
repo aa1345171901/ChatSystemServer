@@ -218,7 +218,7 @@ namespace ChatSystemServer.DAO
             DataSet dataSet = null;
             try
             {
-                string sql = "SELECT user.id,nickname,age,sex FROM userdata,user where user.dataid=userdata.id ORDER BY RAND() LIMIT 10";
+                string sql = "SELECT user.id,nickname,age,sex,faceid FROM userdata,user where user.dataid=userdata.id ORDER BY RAND() LIMIT 10";
                 dataAdapter = new MySqlDataAdapter(sql, mySqlConnection);
                 dataSet = new DataSet();
                 dataAdapter.SelectCommand.CommandText = sql;
@@ -257,7 +257,7 @@ namespace ChatSystemServer.DAO
             try
             {
                 // 查询语句的前半部分
-                string sql = "SELECT user.Id,NickName,Age,Sex FROM Userdata,user";
+                string sql = "SELECT user.Id,NickName,Age,Sex,faceid FROM Userdata,user";
                 string ageCondition = ageOption;
                 string sexCondition = sexOption;
 
@@ -297,7 +297,7 @@ namespace ChatSystemServer.DAO
             try
             {
                 // sql的前置
-                string sql = "SELECT user.Id,NickName,Age,Sex FROM Userdata,user";
+                string sql = "SELECT user.Id,NickName,Age,Sex,faceid FROM Userdata,user";
 
                 sql += string.Format(" WHERE nickname='{0}' and user.dataid=userdata.id", nickName);
                 dataAdapter = new MySqlDataAdapter(sql, mySqlConnection);

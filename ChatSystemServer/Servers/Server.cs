@@ -45,7 +45,7 @@
         {
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             serverSocket.Bind(_ipEndPoint);
-            serverSocket.Listen(5);
+            serverSocket.Listen(20);
             serverSocket.BeginAccept(AcceptCallBack, null);
         }
 
@@ -71,10 +71,18 @@
         /// <param name="ar">接收异步操作接入的一个Client,并创建Socket处理</param>
         private void AcceptCallBack(IAsyncResult ar)
         {
-            Socket clientSocket = serverSocket.EndAccept(ar);
-            Client client = new Client(this, clientSocket);
-            client.Start();
-            serverSocket.BeginAccept(AcceptCallBack, null);
+            try
+            {
+                Socket clientSocket = serverSocket.EndAccept(ar);
+                Client client = new Client(this, clientSocket);
+                client.Start();
+                serverSocket.BeginAccept(AcceptCallBack, null);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Start(); // 报错就重新开启
+            }
         }
     }
 }
