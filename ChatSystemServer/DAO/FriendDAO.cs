@@ -297,14 +297,14 @@ namespace ChatSystemServer.DAO
             try
             {
                 // sql的前置
-                string sql = "SELECT Id,NickName,Age,Sex,Faceid FROM Userdata,user";
+                string sql = "SELECT user.Id,NickName,Age,Sex,Faceid FROM Userdata,user";
 
                 sql += string.Format(" WHERE nickname='{0}' and user.dataid=userdata.id", nickName);
                 dataAdapter = new MySqlDataAdapter(sql, mySqlConnection);
                 dataSet = new DataSet();
                 dataAdapter.Fill(dataSet, "userdata,user");
 
-                sql = "SELECT Id,NickName,Age,Sex,Faceid FROM Userdata,user" + string.Format(" WHERE user.id={0} and user.dataid=userdata.id", friendId);
+                sql = "SELECT user.Id,NickName,Age,Sex,Faceid FROM Userdata,user" + string.Format(" WHERE user.id={0} and user.dataid=userdata.id", friendId);
                 dataAdapter.SelectCommand.CommandText = sql;
                 dataAdapter.Fill(dataSet, "userdata,user");
                 return dataSet;
