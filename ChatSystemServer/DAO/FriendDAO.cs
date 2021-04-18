@@ -4,6 +4,7 @@ namespace ChatSystemServer.DAO
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using ChatSystemServer.Model;
     using MySql.Data.MySqlClient;
 
     /// <summary>
@@ -417,6 +418,42 @@ namespace ChatSystemServer.DAO
             catch (Exception e)
             {
                 Console.WriteLine("UpdateStranger连接数据库时出错:" + e.Message);
+                return null;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取好友的dataid
+        /// </summary>
+        /// <returns>返回user</returns>
+        public User GetFriendUser(MySqlConnection mysqlConnection, int id)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("select * from user where id=@id", mysqlConnection);
+                cmd.Parameters.AddWithValue("id", id);
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    int dataId = (int)reader["dataid"];
+                    return new User(id, dataId);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("VerifyUser连接数据库时出错:" + e.Message);
                 return null;
             }
             finally

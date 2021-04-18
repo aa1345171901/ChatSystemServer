@@ -18,6 +18,16 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="User"/> class.
+        /// 构造函数，用于获取好友dataid
+        /// </summary>
+        public User(int id, int dataId)
+        {
+            Id = id;
+            DataId = dataId;
+        }
+
+        /// <summary>
         /// 用户的id，相当于账号
         /// </summary>
         public int Id { get; set; }

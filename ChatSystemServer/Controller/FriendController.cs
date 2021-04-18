@@ -6,6 +6,7 @@
     using System.Text;
     using ChatSystemServer.DAO;
     using ChatSystemServer.Helper;
+    using ChatSystemServer.Model;
     using ChatSystemServer.Servers;
     using Common;
 
@@ -15,6 +16,8 @@
     public class FriendController : BaseController
     {
         private FriendDAO friendDAO;
+        private UserDAO userDAO;
+        private UserDataDAO userDataDAO;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FriendController"/> class.
@@ -24,6 +27,8 @@
         {
             requestCode = RequestCode.Friend;
             friendDAO = new FriendDAO();
+            userDAO = new UserDAO();
+            userDataDAO = new UserDataDAO();
         }
 
         /// <summary>
@@ -175,6 +180,26 @@
             else
             {
                 return ((int)ReturnCode.Fail).ToString();
+            }
+        }
+
+        /// <summary>
+        /// 获取好友的信息
+        /// </summary>
+        /// <returns>返回传送给客户端的信息</returns>
+        public string GetFriendDetail(string data, Client client, Server server)
+        {
+            int id = int.Parse(data);
+            User user = friendDAO.GetFriendUser(client.MySqlConnection, id);
+            if (user == null)
+            {
+                return ((int)ReturnCode.Fail).ToString();
+            }
+            else
+            {
+                UserData userData = userDataDAO.GetUserDataByDataId(client.MySqlConnection, user.DataId);
+                client.SetUserAndData(user, userData);
+                return string.Format("{0},{1},{2}", ((int)ReturnCode.Success).ToString(), user.Id, userData.GetString());
             }
         }
 
