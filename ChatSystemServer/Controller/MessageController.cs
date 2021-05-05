@@ -87,6 +87,12 @@
             Messages msg = new Messages(fromUserId, toUserId, message, sendTime);
             if (messageDAO.SendToChat(client.MySqlConnection, msg))
             {
+                // 给好友发送一份
+                if (server.GetChatReceive(toUserId) != null)
+                {
+                    server.SendResponse(ActionCode.ChatByReceive, server.GetChatReceive(toUserId), ((int)ReturnCode.Success).ToString() + "," + toUserId + "," + msg.ToString());
+                }
+
                 return ((int)ReturnCode.Success).ToString() + "," + toUserId;
             }
             else

@@ -17,6 +17,8 @@
 
         private ControllerManager controller;  // 单一控制实例
 
+        private Dictionary<Client, int> onlineIdClients = new Dictionary<Client, int>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Server"/> class.
         /// </summary>
@@ -63,6 +65,44 @@
         public void SendResponse(ActionCode actionCode, Client client, string data)
         {
             client.SnedReponse(actionCode, data);
+        }
+
+        /// <summary>
+        /// 设置在线用户
+        /// </summary>
+        /// <param name="client">用户client</param>
+        /// <param name="id">用户登录id</param>
+        public void SetOnlineClient(Client client, int id)
+        {
+            onlineIdClients.Add(client, id);
+        }
+
+        /// <summary>
+        /// 移除在线用户
+        /// </summary>
+        /// <param name="client">用户client</param>
+        /// <param name="id">用户登录id</param>
+        public void RemoveOnlineClient(Client client)
+        {
+            onlineIdClients.Remove(client);
+        }
+
+        /// <summary>
+        /// 通过id获取好友的socket
+        /// </summary>
+        /// <returns>返回的socket</returns>
+        public Client GetChatReceive(int id)
+        {
+            Client client = null;
+            foreach (var item in onlineIdClients)
+            {
+                if (item.Value == id)
+                {
+                    client = item.Key;
+                }
+            }
+
+            return client;
         }
 
         /// <summary>

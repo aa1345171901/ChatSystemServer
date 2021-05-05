@@ -129,6 +129,7 @@
             DBHelper.Close(mySqlConnection);
             if (clientSocket != null && clientSocket.Connected)
             {
+                serverSocket.RemoveOnlineClient(this);
                 clientSocket.Shutdown(SocketShutdown.Both);
                 Thread.Sleep(10);
             }
