@@ -111,10 +111,10 @@
             int id = int.Parse(strs[0]);
             int friendId = int.Parse(strs[1]);
             Messages message = null;
-            message = messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId);
+            message = messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId).Item1;
             if (message != null)
             {
-                return ((int)ReturnCode.Success).ToString() + "," + friendId + "," + message.ToString();
+                return ((int)ReturnCode.Success).ToString() + "," + friendId + "," + message.ToString() + "," + messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId).Item2;
             }
             else
             {

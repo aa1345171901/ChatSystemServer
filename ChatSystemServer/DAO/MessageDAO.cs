@@ -163,14 +163,14 @@ namespace ChatSystemServer.DAO
         /// 接收消息
         /// </summary>
         /// <returns>返回获取的消息</returns>
-        public Messages ReceiveToChat(MySqlConnection mySqlConnection, int id, int friendId)
+        public (Messages, string) ReceiveToChat(MySqlConnection mySqlConnection, int id, int friendId)
         {
             MySqlDataReader reader = null;
             try
             {
                 Messages msg = new Messages();
                 int msgId = 0;
-                MySqlCommand cmd = new MySqlCommand("select msgid,message,sendtime from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=1 and messagestate=0 order by sendtime asc limit 1", mySqlConnection);
+                MySqlCommand cmd = new MySqlCommand("select msgid,message,sendtime from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=1 and messagestate=0 order by sendtime desc limit 1", mySqlConnection);
                 cmd.Parameters.AddWithValue("fromuserid", friendId);
                 cmd.Parameters.AddWithValue("touserid", id);
                 reader = cmd.ExecuteReader();
@@ -182,7 +182,7 @@ namespace ChatSystemServer.DAO
                 }
                 else
                 {
-                    return null;
+                    return (null, null);
                 }
 
                 reader.Close();
@@ -190,12 +190,22 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("msgId", msgId);
                 cmd.ExecuteNonQuery();
 
-                return msg;
+                string sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromUserId";
+                cmd.CommandText = sql;
+                reader = cmd.ExecuteReader();
+
+                string nickName = "";
+                if (reader.Read())
+                {
+                    nickName = reader["nickName"].ToString();
+                }
+
+                return (msg, nickName);
             }
             catch (Exception e)
             {
                 Console.WriteLine("ReceiveToChat连接数据库时出错:" + e.Message);
-                return null;
+                return (null, null);
             }
             finally
             {
