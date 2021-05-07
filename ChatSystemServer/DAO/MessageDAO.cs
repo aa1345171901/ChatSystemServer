@@ -46,8 +46,35 @@ namespace ChatSystemServer.DAO
                     MySqlCommand cmdGet = new MySqlCommand("SELECT FaceId FROM Userdata,user WHERE userdata.id=user.dataid and user.id=@userid", mySqlConnection);
                     cmdGet.Parameters.AddWithValue("userid", int.Parse(item.Value.Split(',')[0]));
                     int friendFaceId = Convert.ToInt32(cmdGet.ExecuteScalar());   // 设置发消息的好友的头像索引
-                    string s = item.Value + "," + friendFaceId;
+
+                    Messages msg = new Messages();
+                    int msgId = 0;
+                    MySqlCommand cmdMsg = new MySqlCommand("select msgid,message,sendtime from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=1 and messagestate=0 order by sendtime desc limit 1", mySqlConnection);
+                    cmdMsg.Parameters.AddWithValue("fromuserid", int.Parse(item.Value.Split(',')[0]));
+                    cmdMsg.Parameters.AddWithValue("touserid", id);
+                    reader = cmdMsg.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        msg.Message = (string)reader["message"];
+                        msg.SendTime = Convert.ToDateTime(reader["sendtime"]);
+                        msgId = (int)reader["msgid"];
+                    }
+
+                    reader.Close();
+
+                    string sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromUserId";
+                    cmdMsg.CommandText = sql;
+                    reader = cmdMsg.ExecuteReader();
+
+                    string nickName = "";
+                    if (reader.Read())
+                    {
+                        nickName = reader["nickName"].ToString();
+                    }
+
+                    string s = item.Value + "," + friendFaceId + "," + nickName + "," + msg.ToString();
                     dict2.Add(item.Key, s);
+                    reader.Close();
                     // }
                     // else
                     // {
