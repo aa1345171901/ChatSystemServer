@@ -90,6 +90,7 @@
                 // 给好友发送一份
                 if (server.GetChatReceive(toUserId) != null)
                 {
+                    server.RequestHander(RequestCode.Message, ActionCode.GetUnreadMessage, toUserId.ToString(), server.GetChatReceive(toUserId));
                     server.SendResponse(ActionCode.ChatByReceive, server.GetChatReceive(toUserId), ((int)ReturnCode.Success).ToString() + "," + toUserId + "," + msg.ToString());
                 }
 
@@ -115,6 +116,33 @@
             if (message != null)
             {
                 return ((int)ReturnCode.Success).ToString() + "," + friendId + "," + message.ToString() + "," + messageDAO.ReceiveToChat(client.MySqlConnection, id, friendId).Item2;
+            }
+            else
+            {
+                return ((int)ReturnCode.Fail).ToString() + "," + friendId;
+            }
+        }
+
+        /// <summary>
+        /// 手机端点击获取目标好友所有未读信息
+        /// </summary>
+        /// <returns> 所有未读消息</returns>
+        public string GetAllReceiveMsg(string data, Client client, Server server)
+        {
+            string[] strs = data.Split(',');
+            int id = int.Parse(strs[0]);
+            int friendId = int.Parse(strs[1]);
+            List<Messages> messages = null;
+            messages = messageDAO.GetReceiveMsgs(client.MySqlConnection, id, friendId);
+            if (messages != null)
+            {
+                string msgs = "";
+                foreach (var item in messages)
+                {
+                    msgs += item.ToString() + "-";
+                }
+
+                return ((int)ReturnCode.Success).ToString() + "," + msgs;
             }
             else
             {

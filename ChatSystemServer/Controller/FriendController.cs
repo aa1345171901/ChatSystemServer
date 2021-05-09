@@ -54,6 +54,12 @@
                 string result = friendDAO.AddFriendRequest(client.MySqlConnection, id, friendId);
                 if (result == " ")
                 {
+                    // 给好友发送一份
+                    if (server.GetChatReceive(friendId) != null)
+                    {
+                        server.RequestHander(RequestCode.Message, ActionCode.GetUnreadMessage, friendId.ToString(), server.GetChatReceive(friendId));
+                    }
+
                     return ((int)ReturnCode.Success).ToString();
                 }
                 else

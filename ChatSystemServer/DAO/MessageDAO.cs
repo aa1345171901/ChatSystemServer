@@ -252,7 +252,7 @@ namespace ChatSystemServer.DAO
             MySqlDataReader reader = null;
             try
             {
-                int messageId = 0;
+                List<int> msgsId = new List<int>();
 
                 // 查找一个未读消息
                 MySqlCommand cmd = new MySqlCommand("select msgid from messages where fromuserid=@fromUserId and touserid=@loginid and messagetype=2 and messagestate=0", mySqlConnection);
@@ -260,20 +260,22 @@ namespace ChatSystemServer.DAO
                 cmd.Parameters.AddWithValue("fromUserId", fromUserId);
                 reader = cmd.ExecuteReader();
 
-                if (reader.Read())
+                while (reader.Read())
                 {
-                    messageId = (int)reader["msgid"];
+                    msgsId.Add((int)reader["msgid"]);
                 }
 
                 reader.Close();
 
                 // 将消息状态置为已读
-                string sql = "UPDATE Messages SET MessageState =1 WHERE msgid=@messageid";
-                cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("messageid", messageId);
-                cmd.ExecuteNonQuery();
+                foreach (var msgId in msgsId)
+                {
+                    MySqlCommand cmdMsg = new MySqlCommand("update messages set messagestate=1 where msgid=@msgId", mySqlConnection);
+                    cmdMsg.Parameters.AddWithValue("msgId", msgId);
+                    cmdMsg.ExecuteNonQuery();
+                }
 
-                sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromUserId";
+                string sql = "select nickname from userdata,user where user.dataid=userdata.id and user.id=@fromUserId";
                 cmd.CommandText = sql;
                 reader = cmd.ExecuteReader();
 
@@ -289,6 +291,55 @@ namespace ChatSystemServer.DAO
             {
                 Console.WriteLine("SetMessageRead访问数据库时出错:" + e.Message);
                 return "";
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 接收目标好友所有未读消息
+        /// </summary>
+        /// <returns>返回获取的消息</returns>
+        public List<Messages> GetReceiveMsgs(MySqlConnection mySqlConnection, int id, int friendId)
+        {
+            MySqlDataReader reader = null;
+            try
+            {
+                List<Messages> msgs = new List<Messages>();
+                List<int> msgsId = new List<int>();
+                MySqlCommand cmd = new MySqlCommand("select msgid,message,sendtime from messages where fromuserid=@fromuserid and touserid=@touserid and messagetype=1 and messagestate=0 order by sendtime desc", mySqlConnection);
+                cmd.Parameters.AddWithValue("fromuserid", friendId);
+                cmd.Parameters.AddWithValue("touserid", id);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Messages msg = new Messages();
+                    msg.Message = (string)reader["message"];
+                    msg.SendTime = Convert.ToDateTime(reader["sendtime"]);
+                    msgsId.Add((int)reader["msgid"]);
+                    msgs.Add(msg);
+                }
+
+                reader.Close();
+
+                foreach (var msgId in msgsId)
+                {
+                    MySqlCommand cmdMsg = new MySqlCommand("update messages set messagestate=1 where msgid=@msgId", mySqlConnection);
+                    cmdMsg.Parameters.AddWithValue("msgId", msgId);
+                    cmdMsg.ExecuteNonQuery();
+                }
+
+                return msgs.Count == 0 ? null : msgs;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ReceiveToChat连接数据库时出错:" + e.Message);
+                return null;
             }
             finally
             {

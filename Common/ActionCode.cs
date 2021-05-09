@@ -21,6 +21,7 @@ namespace Common
         AddFriendMessageRequest,
         SendByChat,
         ChatByReceive,
-        GetFriendDetail
+        GetFriendDetail,
+        GetAllReceiveMsg
     }
 }

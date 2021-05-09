@@ -43,6 +43,9 @@ namespace ChatSystemServer.Controller
                 UserData userData = _userDataDAO.GetUserDataByDataId(client.MySqlConnection, user.DataId);
                 client.SetUserAndData(user, userData);
                 server.SetOnlineClient(client, id);
+
+                server.RequestHander(RequestCode.Message, ActionCode.GetUnreadMessage, id.ToString(), server.GetChatReceive(id));
+
                 return string.Format("{0},{1},{2}", ((int)ReturnCode.Success).ToString(), user.Id, userData.GetString());
             }
         }
